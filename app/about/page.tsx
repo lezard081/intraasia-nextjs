@@ -52,7 +52,7 @@ export default function About() {
             </div>
             <div className="w-full md:w-1/2">
               <div className="mb-4">
-                <h2 className="text-3xl font-bold mb-2 relative">
+                <h2 className="text-3xl font-bold mb-2 relative text-gray-800">
                   <span className="inline-block w-16 h-1 bg-gray-800 absolute -top-4"></span>
                   Our Quality Policy
                 </h2>
