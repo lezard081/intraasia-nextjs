@@ -9,7 +9,8 @@ export interface Product {
   image: string;
   category: string;
   subcategory: string;
-  specifications: ProductSpecification[];
+  definition: string;
+  features: string[];
   dateAdded: string; // ISO date string format
 }
 

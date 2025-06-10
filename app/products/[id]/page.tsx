@@ -156,15 +156,20 @@ export default function ProductDetailsPage() {
                 </div>
 
                 <div className="border-t border-gray-200 pt-6">
-                  <h2 className="text-xl font-semibold mb-4">Specifications</h2>
-                  <div className="space-y-4">
-                    {product.specifications.map((spec, index) => (
-                      <div key={index} className="flex flex-col sm:flex-row">
-                        <div className="w-full sm:w-1/3 font-medium text-gray-700">{spec.name}</div>
-                        <div className="w-full sm:w-2/3 text-gray-600">{spec.value}</div>
-                      </div>
-                    ))}
-                  </div>
+                  <h2 className="text-xl font-semibold mb-4">Definition</h2>
+                  <p className="text-gray-700 mb-6">
+                    {product.definition || 'No definition available.'}
+                  </p>
+                  <h2 className="text-xl font-semibold mb-2">Features</h2>
+                  {product.features && product.features.length > 0 ? (
+                    <ul className="list-disc list-inside text-gray-700 space-y-1">
+                      {product.features.map((feature, idx) => (
+                        <li key={idx}>{feature}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 italic">No features listed.</p>
+                  )}
                 </div>
               </div>
             </div>
