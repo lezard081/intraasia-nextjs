@@ -3,53 +3,30 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProductsByCategory } from '@/app/lib/data/products';
+import { getProductsByCategory, products } from '@/app/lib/data/products';
 import { Product } from '@/app/lib/types/products';
 import { useEffect, useState } from 'react';
 
-// This would typically come from a database or API
-const subcategoryInfo = {
-  kitchen: [
-    { 
-      name: 'Commercial Ovens', 
-      slug: 'ovens', 
-      description: 'High-quality commercial ovens for professional kitchens',
-      image: '/product-images/ovens/category-cover.jpg'
-    },
-    { 
-      name: 'Refrigeration', 
-      slug: 'refrigeration', 
-      description: 'Commercial refrigeration solutions for food storage',
-      image: '/product-images/refrigeration/category-cover.jpg'
-    },
-    { 
-      name: 'Food Processors', 
-      slug: 'food-processors', 
-      description: 'Professional food processing equipment for commercial kitchens',
-      image: '/product-images/food-processors/category-cover.jpg'
+// Dynamically generate subcategories from products data
+function getSubcategories(category: string) {
+  const subMap: Record<string, { name: string; slug: string; description: string; image: string }> = {};
+  products.forEach((p) => {
+    if (p.category === category) {
+      if (!subMap[p.subcategory]) {
+        subMap[p.subcategory] = {
+          name: p.subcategory
+            .split('-')
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' '),
+          slug: p.subcategory,
+          description: p.definition,
+          image: p.image,
+        };
+      }
     }
-  ],
-  laundry: [
-    { 
-      name: 'Washing Machines', 
-      slug: 'washing-machines', 
-      description: 'Industrial washing machines for commercial laundry operations',
-      image: '/product-images/washing-machines/category-cover.jpg'
-    },
-    { 
-      name: 'Dryers', 
-      slug: 'dryers', 
-      description: 'Commercial dryers for efficient laundry processing',
-      image: '/product-images/dryers/category-cover.jpg'
-    },
-    { 
-      name: 'Ironing Equipment', 
-      slug: 'ironing', 
-      description: 'Professional ironing and pressing equipment for commercial use',
-      image: '/product-images/ironing/category-cover.jpg'
-    }
-  ]
-};
+  });
+  return Object.values(subMap);
+}
 
 export default function CategoryPage() {
   const params = useParams();
@@ -60,8 +37,8 @@ export default function CategoryPage() {
     // Get product counts for each subcategory
     const counts: Record<string, number> = {};
     
-    if (subcategoryInfo[category as keyof typeof subcategoryInfo]) {
-      subcategoryInfo[category as keyof typeof subcategoryInfo].forEach(subcat => {
+    if (getSubcategories(category as string)) {
+      getSubcategories(category as string).forEach(subcat => {
         const products = getProductsByCategory(category, subcat.slug);
         counts[subcat.slug] = products.length;
       });
@@ -79,7 +56,7 @@ export default function CategoryPage() {
   };
 
   const categoryDisplay = formatText(category);
-  const subcategories = subcategoryInfo[category as keyof typeof subcategoryInfo] || [];
+  const subcategories = getSubcategories(category);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -108,10 +85,10 @@ export default function CategoryPage() {
                 <Link 
                   href={`/categories/${category}/${subcategory.slug}`} 
                   key={subcategory.slug}
-                  className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 hover:shadow-lg"
+                  className="group bg-white dark:bg-[#1a2332] rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105 hover:shadow-2xl border-2 border-[#0054A6] dark:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
                 >
-                  <div className="relative h-48 bg-gray-200">
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                  <div className="relative h-52 bg-gray-200 dark:bg-[#22304a]">
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-100">
                       {/* Placeholder for missing images */}
                       <span>Category Image</span>
                     </div>
@@ -119,7 +96,7 @@ export default function CategoryPage() {
                       src={subcategory.image}
                       alt={subcategory.name}
                       fill
-                      className="object-cover"
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       onError={(e) => {
                         // Hide the image on error, showing the placeholder
@@ -127,17 +104,17 @@ export default function CategoryPage() {
                         target.style.display = 'none';
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <h3 className="text-xl font-bold text-white">{subcategory.name}</h3>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end justify-center p-4">
+                      <h3 className="text-2xl font-extrabold text-white drop-shadow-lg tracking-wide uppercase group-hover:text-blue-200 transition-colors">{subcategory.name}</h3>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <p className="text-gray-600 mb-2">{subcategory.description}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-500">
+                  <div className="p-6 bg-white dark:bg-[#1a2332]">
+                    <p className="text-gray-700 dark:text-gray-200 mb-3 text-base font-medium line-clamp-2">{subcategory.description}</p>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-sm text-gray-500 dark:text-gray-300">
                         {productCounts[subcategory.slug] || 0} Products
                       </span>
-                      <span className="text-sm font-medium text-blue-600">View All</span>
+                      <span className="text-sm font-bold text-blue-600 dark:text-blue-300 uppercase tracking-wide group-hover:underline">View All</span>
                     </div>
                   </div>
                 </Link>
