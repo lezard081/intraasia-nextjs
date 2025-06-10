@@ -59,16 +59,6 @@ const HeroCarousel = () => {
                             )}
                             priority={index === 0}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center z-20">
-                            <div className="text-center text-white animate-fade-in-up px-4">
-                                <h2 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">
-                                    Welcome to Intra Asia
-                                </h2>
-                                <p className="text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">
-                                    Connecting Asia with innovative solutions
-                                </p>
-                            </div>
-                        </div>
                     </SwiperSlide>
                 ))}
 

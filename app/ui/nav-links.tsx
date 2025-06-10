@@ -63,7 +63,7 @@ export default function NavLinks() {
         <div className="flex flex-row items-center justify-end space-x-4 md:space-x-6">
             {/* Categories Dropdown */}
             <div className="relative" ref={dropdownRef}>
-                <button 
+                <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className={clsx(
                         "px-2 py-1 text-sm rounded-sm md:text-base font-normal transition-colors hover:text-blue-600 hover:bg-sky-400 hover:border-white hover:border-2 flex items-center",
@@ -74,11 +74,11 @@ export default function NavLinks() {
                     )}
                 >
                     <span className="block">Categories</span>
-                    <svg 
-                        className={`ml-1 w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24" 
+                    <svg
+                        className={`ml-1 w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -93,7 +93,7 @@ export default function NavLinks() {
                                 <ul>
                                     {category.items.map((item, itemIndex) => (
                                         <li key={itemIndex}>
-                                            <Link 
+                                            <Link
                                                 href={item.href}
                                                 className="block px-2 py-1 text-sm text-gray-700 hover:bg-blue-50 rounded"
                                                 onClick={() => setIsDropdownOpen(false)}

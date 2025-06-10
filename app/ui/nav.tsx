@@ -16,7 +16,7 @@ export default function Nav() {
     }, [pathname]);
 
     return (
-        <nav className="relative bg-white shadow-lg">
+        <nav className="relative bg-white shadow-lg dark:text-black dark:bg-gray-800">
             <div className="flex flex-row items-center justify-between px-4 sm:px-6 md:px-8 py-4">
                 <Link href="/" className="z-10">
                     <IntraAsiaLogo />
