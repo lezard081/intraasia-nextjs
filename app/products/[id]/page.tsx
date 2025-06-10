@@ -153,6 +153,9 @@ export default function ProductDetailsPage() {
                   <p className="text-sm text-gray-500">
                     Added on {new Date(product.dateAdded).toLocaleDateString()}
                   </p>
+                  <p className="text-sm text-gray-500">
+                    Supplier: <span className="font-medium text-gray-700">{product.supplier}</span>
+                  </p>
                 </div>
 
                 <div className="border-t border-gray-200 pt-6">

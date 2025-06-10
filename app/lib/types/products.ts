@@ -12,6 +12,7 @@ export interface Product {
   definition: string;
   features: string[];
   dateAdded: string; // ISO date string format
+  supplier: string; // New field for supplier name
 }
 
-export type SortOption = 'alphabetical' | 'newest' | 'oldest';
+export type SortOption = 'alphabetical' | 'newest' | 'oldest' | 'supplier';

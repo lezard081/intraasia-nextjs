@@ -14,8 +14,9 @@ export const products: Product[] = [
       'Stainless steel construction for durability',
       'Multiple rack positions for versatile cooking',
       'Energy-efficient design',
-        ],
-    dateAdded: '2023-05-15T08:00:00Z'
+    ],
+    dateAdded: '2023-05-15T08:00:00Z',
+    supplier: 'Acme Supplies'
   },
   {
     id: 'oven-2',
@@ -30,7 +31,8 @@ export const products: Product[] = [
       'Digital temperature control',
       'Large capacity for multiple pizzas at once'
     ],
-    dateAdded: '2023-08-22T10:30:00Z'
+    dateAdded: '2023-08-22T10:30:00Z',
+    supplier: 'KitchenPro'
   },
   
   // Kitchen - Refrigeration
@@ -47,7 +49,8 @@ export const products: Product[] = [
       'Self-closing doors with magnetic seals',
       'Energy-efficient compressor'
     ],
-    dateAdded: '2023-06-10T09:15:00Z'
+    dateAdded: '2023-06-10T09:15:00Z',
+    supplier: 'CoolTech'
   },
   {
     id: 'freezer-1',
@@ -62,7 +65,8 @@ export const products: Product[] = [
       'Removable storage baskets for easy organization',
       'Lockable lid for security'
     ],
-    dateAdded: '2023-09-05T14:20:00Z'
+    dateAdded: '2023-09-05T14:20:00Z',
+    supplier: 'CoolTech'
   },
   
   // Kitchen - Food Processors
@@ -79,7 +83,8 @@ export const products: Product[] = [
       'Variable speed control for precision processing',
       'Safety interlock system'
     ],
-    dateAdded: '2023-07-12T11:45:00Z'
+    dateAdded: '2023-07-12T11:45:00Z',
+    supplier: 'PrepMaster'
   },
   {
     id: 'mixer-1',
@@ -94,7 +99,8 @@ export const products: Product[] = [
       'Planetary mixing action for thorough mixing',
       'Durable construction for long-lasting performance'
     ],
-    dateAdded: '2023-04-18T13:30:00Z'
+    dateAdded: '2023-04-18T13:30:00Z',
+    supplier: 'PrepMaster'
   },
   
   // Laundry - Washing Machines
@@ -111,7 +117,8 @@ export const products: Product[] = [
         'Energy-efficient design with low water consumption',
         'Digital display with programmable settings'
     ],
-    dateAdded: '2023-03-20T09:00:00Z'
+    dateAdded: '2023-03-20T09:00:00Z',
+    supplier: 'LaundryPro'
   },
   {
     id: 'washer-2',
@@ -126,7 +133,8 @@ export const products: Product[] = [
       'Heavy-duty construction for durability',
       'Easy-to-use control panel with LED indicators'
     ],
-    dateAdded: '2023-10-08T15:45:00Z'
+    dateAdded: '2023-10-08T15:45:00Z',
+    supplier: 'LaundryPro'
   },
   
   // Laundry - Dryers
@@ -143,7 +151,8 @@ export const products: Product[] = [
       'Digital display with programmable drying cycles',
       'Stainless steel drum for durability'
     ],
-    dateAdded: '2023-02-14T10:20:00Z'
+    dateAdded: '2023-02-14T10:20:00Z',
+    supplier: 'LaundryPro'
   },
   {
     id: 'dryer-2',
@@ -158,7 +167,8 @@ export const products: Product[] = [
       'Multiple drying cycles for different fabrics',
       'Energy-efficient operation with low heat loss'
     ],
-    dateAdded: '2023-11-30T08:30:00Z'
+    dateAdded: '2023-11-30T08:30:00Z',
+    supplier: 'LaundryPro'
   },
   
   // Laundry - Ironing Equipment
@@ -175,7 +185,8 @@ export const products: Product[] = [
       'Adjustable temperature control for different fabrics',
       'Durable soleplate for smooth gliding'
     ],
-    dateAdded: '2023-01-25T11:10:00Z'
+    dateAdded: '2023-01-25T11:10:00Z',
+    supplier: 'IronMaster'
   },
   {
     id: 'press-1',
@@ -190,7 +201,8 @@ export const products: Product[] = [
       'Ergonomic design for comfortable use',
       'Heavy-duty construction for durability'
     ],
-    dateAdded: '2023-12-05T13:15:00Z'
+    dateAdded: '2023-12-05T13:15:00Z',
+    supplier: 'IronMaster'
   }
 ];
 
@@ -218,6 +230,8 @@ export function sortProducts(products: Product[], sortOption: string): Product[]
       return productsCopy.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime());
     case 'oldest':
       return productsCopy.sort((a, b) => new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime());
+    case 'supplier':
+      return productsCopy.sort((a, b) => a.supplier.localeCompare(b.supplier));
     default:
       return productsCopy;
   }

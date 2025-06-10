@@ -106,6 +106,17 @@ export default function ProductsPage() {
                 >
                   Oldest
                 </button>
+                <button
+                  onClick={() => handleSortChange('supplier')}
+                  className={cn(
+                    "px-3 py-1 text-sm rounded-md transition-colors",
+                    sortOption === 'supplier'
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  )}
+                >
+                  Supplier
+                </button>
               </div>
             </div>
           </div>
@@ -153,12 +164,9 @@ export default function ProductsPage() {
                   </div>
                   <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-500">
-                        {new Date(product.dateAdded).toLocaleDateString()}
-                      </span>
-                      <span className="text-sm font-medium text-blue-600">View Details</span>
-                    </div>
+                    <p className="text-sm text-gray-600 mb-1">Supplier: <span className="font-medium text-gray-700">{product.supplier}</span></p>
+                    <p className="text-gray-500 text-sm line-clamp-2 mb-2">{product.definition}</p>
+                    <span className="text-xs text-gray-400">Added {new Date(product.dateAdded).toLocaleDateString()}</span>
                   </div>
                 </Link>
               ))}
