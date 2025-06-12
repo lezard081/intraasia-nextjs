@@ -5,6 +5,7 @@ import IntraAsiaLogo from './intra-asia-logo';
 import Navlinks from './nav-links';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { products } from '@/app/lib/data/products';
 
 export default function Nav() {
     const pathname = usePathname();
@@ -14,6 +15,27 @@ export default function Nav() {
     useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [pathname]);
+
+    // Helper to get categories and subcategories from products data
+    function getCategoriesFromProducts() {
+        const map = {};
+        products.forEach((p) => {
+            if (!map[p.category]) map[p.category] = new Set();
+            map[p.category].add(p.subcategory);
+        });
+        return Object.entries(map).map(([section, subSet]) => ({
+            section,
+            items: Array.from(subSet).map(sub => ({
+                name: sub
+                    .split('-')
+                    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(' '),
+                href: `/categories/${section}/${sub}`
+            }))
+        }));
+    }
+
+    const dynamicCategories = getCategoriesFromProducts();
 
     return (
         <nav className="relative bg-white shadow-lg dark:text-black dark:bg-gray-800">
@@ -53,7 +75,7 @@ export default function Nav() {
 
             {/* Mobile Menu */}
             <div 
-                className={`md:hidden absolute top-full left-0 right-0 bg-white shadow-lg transition-transform duration-300 ease-in-out z-10 ${
+                className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-[#101c2c] shadow-lg transition-transform duration-300 ease-in-out z-10 ${
                     isMobileMenuOpen ? 'transform translate-y-0' : 'transform -translate-y-full opacity-0 pointer-events-none'
                 }`}
             >
@@ -68,7 +90,7 @@ export default function Nav() {
                                 <Link 
                                     href={link.href}
                                     className={`block px-2 py-2 text-base ${
-                                        pathname === link.href ? 'text-blue-800 font-semibold' : 'text-gray-600'
+                                        pathname === link.href ? 'text-blue-800 dark:text-blue-400 font-semibold' : 'text-gray-600 dark:text-gray-100'
                                     }`}
                                 >
                                     {link.label}
@@ -76,48 +98,26 @@ export default function Nav() {
                             </li>
                         ))}
                         <li>
-                            <span className="block px-2 py-2 text-base font-semibold text-gray-800">Categories</span>
-                            <ul className="pl-4 space-y-2 mt-2">
-                                <li>
-                                    <span className="block px-2 py-1 text-sm font-medium text-gray-700">Kitchen</span>
-                                    <ul className="pl-4 space-y-1 mt-1">
-                                        <li>
-                                            <Link href="/categories/kitchen/ovens" className="block px-2 py-1 text-sm text-gray-600">
-                                                Commercial Ovens
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/categories/kitchen/refrigeration" className="block px-2 py-1 text-sm text-gray-600">
-                                                Refrigeration
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/categories/kitchen/food-processors" className="block px-2 py-1 text-sm text-gray-600">
-                                                Food Processors
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="mt-3">
-                                    <span className="block px-2 py-1 text-sm font-medium text-gray-700">Laundry</span>
-                                    <ul className="pl-4 space-y-1 mt-1">
-                                        <li>
-                                            <Link href="/categories/laundry/washing-machines" className="block px-2 py-1 text-sm text-gray-600">
-                                                Washing Machines
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/categories/laundry/dryers" className="block px-2 py-1 text-sm text-gray-600">
-                                                Dryers
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/categories/laundry/ironing" className="block px-2 py-1 text-sm text-gray-600">
-                                                Ironing Equipment
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
+                            <span className="block px-2 py-2 text-base font-semibold text-gray-800 dark:text-blue-400 uppercase tracking-wide">Categories</span>
+                            <ul className="pl-2 space-y-2 mt-2">
+                                {dynamicCategories.map((cat) => (
+                                    <li key={cat.section}>
+                                        <span className="block px-2 py-1 text-sm font-bold text-[#0054A6] dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-[#14213d] rounded mb-1">{cat.section.charAt(0).toUpperCase() + cat.section.slice(1)}</span>
+                                        <ul className="pl-4 space-y-1 mt-1">
+                                            {cat.items.map((item) => (
+                                                <li key={item.href}>
+                                                    <Link href={item.href} className={`block px-2 py-1 text-sm rounded transition-colors ${
+                                                        pathname === item.href
+                                                            ? 'text-[#0054A6] dark:text-blue-400 bg-gray-100 dark:bg-[#22304a] font-semibold'
+                                                            : 'text-gray-600 dark:text-gray-100 hover:text-[#0054A6] dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-[#22304a]'
+                                                    }`}>
+                                                        {item.name}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))}
                             </ul>
                         </li>
                     </ul>
