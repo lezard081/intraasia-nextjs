@@ -1,14 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { products } from "@/app/lib/data/products";
-import { useRef, useEffect } from "react";
+import { getProducts } from "@/app/lib/data-client";
+import { useRef, useEffect, useState } from "react";
+import { Product } from "@/app/lib/types/products";
 
 export default function HomeProducts() {
   const cardsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch products
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    async function loadProducts() {
+      try {
+        const fetchedProducts = await getProducts();
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProducts();
+  }, []);
+
+  // Animation observer
+  useEffect(() => {
+    if (typeof window === "undefined" || loading) return;
     const observer = new window.IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -25,7 +45,19 @@ export default function HomeProducts() {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, []);
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <section className="w-full bg-white py-12">
+        <div className="container mx-auto px-4 md:px-8 max-w-6xl">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-white py-12">

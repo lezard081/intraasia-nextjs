@@ -4,23 +4,23 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProductById } from '@/app/lib/data/products';
+import { getProductById } from '@/app/lib/data-client';
 import { Product } from '@/app/lib/types/products';
 
 export default function ProductDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const productId = params.id as string;
-  
+
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // In a real application, this would be an API call
-    const fetchProduct = () => {
+    // Fetch product from the database
+    const fetchProduct = async () => {
       setIsLoading(true);
       try {
-        const fetchedProduct = getProductById(productId);
+        const fetchedProduct = await getProductById(productId);
         if (fetchedProduct) {
           setProduct(fetchedProduct);
         } else {
@@ -148,7 +148,7 @@ export default function ProductDetailsPage() {
               {/* Product Details */}
               <div className="w-full md:w-1/2">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
-                
+
                 <div className="mb-6">
                   <p className="text-sm text-gray-500">
                     Added on {new Date(product.dateAdded).toLocaleDateString()}

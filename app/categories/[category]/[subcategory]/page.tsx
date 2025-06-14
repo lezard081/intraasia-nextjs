@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProductsByCategory, sortProducts } from '@/app/lib/data/products';
+import { getProductsByCategory, sortProducts } from '@/app/lib/data-client';
 import { Product, SortOption } from '@/app/lib/types/products';
 import { cn } from '@/app/lib/utils';
 
@@ -12,17 +12,17 @@ export default function ProductsPage() {
   const params = useParams();
   const category = params.category as string;
   const subcategory = params.subcategory as string;
-  
+
   const [products, setProducts] = useState<Product[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>('alphabetical');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // In a real application, this would be an API call
-    const fetchProducts = () => {
+    // Fetch products from the database
+    const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const fetchedProducts = getProductsByCategory(category, subcategory);
+        const fetchedProducts = await getProductsByCategory(category, subcategory);
         const sortedProducts = sortProducts(fetchedProducts, sortOption);
         setProducts(sortedProducts);
       } catch (error) {
