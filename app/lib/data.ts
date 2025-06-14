@@ -8,7 +8,7 @@ export async function getProducts(): Promise<Product[]> {
     const supabase = createClient(cookieStore)
 
     const { data: products, error } = await supabase
-        .from('products')
+        .from('intraasia.products')
         .select(`
             id,
             name,
@@ -38,23 +38,31 @@ export async function getProducts(): Promise<Product[]> {
             )
         `)
 
-    if (error) {
-        console.error('Error fetching products:', error)
+    if (error || !products) {
+        console.error('Error fetching products:', error, products)
         return []
     }
 
     // Transform the data to match the Product interface
-    return products.map(product => ({
-        id: product.id.toString(),
-        name: product.name,
-        image: product.image || '/product-images/placeholder.jpg',
-        category: product.subcategories.categories.name.toLowerCase(),
-        subcategory: product.subcategories.name.toLowerCase().replace(/\s+/g, '-'),
-        definition: product.description || '',
-        features: product.product_features.map(pf => pf.features.name),
-        dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
-        supplier: product.brands.name
-    }))
+    return products.map(product => {
+        const subcategory = product.subcategories?.[0];
+        const category = subcategory?.categories?.[0];
+        const brand = product.brands?.[0];
+        return {
+            id: product.id.toString(),
+            name: product.name,
+            image: product.image || '/product-images/placeholder.jpg',
+            category: category ? category.name.toLowerCase() : '',
+            subcategory: subcategory ? subcategory.name.toLowerCase().replace(/\s+/g, '-') : '',
+            brand: brand ? brand.name : '',
+            definition: product.description || '',
+            features: Array.isArray(product.product_features)
+                ? product.product_features.map(pf => pf.features?.[0]?.name || '').filter(Boolean)
+                : [],
+            dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
+            supplier: brand ? brand.name : ''
+        }
+    })
 }
 
 // Fetch all categories from the database
@@ -63,7 +71,7 @@ export async function getCategories() {
     const supabase = createClient(cookieStore)
 
     const { data: categories, error } = await supabase
-        .from('categories')
+        .from('intraasia.categories')
         .select(`
             id,
             name,
@@ -87,7 +95,7 @@ export async function getSubcategories() {
     const supabase = createClient(cookieStore)
 
     const { data: subcategories, error } = await supabase
-        .from('subcategories')
+        .from('intraasia.subcategories')
         .select(`
             id,
             name,
@@ -112,7 +120,7 @@ export async function getBrands() {
     const supabase = createClient(cookieStore)
 
     const { data: brands, error } = await supabase
-        .from('brands')
+        .from('intraasia.brands')
         .select('*')
 
     if (error) {
@@ -129,7 +137,7 @@ export async function getFeatures() {
     const supabase = createClient(cookieStore)
 
     const { data: features, error } = await supabase
-        .from('features')
+        .from('intraasia.features')
         .select('*')
 
     if (error) {
@@ -144,8 +152,8 @@ export async function getFeatures() {
 export async function getProductsByCategory(categoryName: string, subcategoryName?: string): Promise<Product[]> {
     const products = await getProducts()
 
-    return products.filter(product => 
-        product.category === categoryName && 
+    return products.filter(product =>
+        product.category === categoryName &&
         (subcategoryName ? product.subcategory === subcategoryName : true)
     )
 }

@@ -8,7 +8,7 @@ export async function getProducts(): Promise<Product[]> {
         const supabase = createClient()
 
         const { data: products, error } = await supabase
-            .from('products')
+            .from('intraasia.products')
             .select(`
                 id,
                 name,
@@ -82,7 +82,7 @@ export async function getCategories() {
         const supabase = createClient()
 
         const { data: categories, error } = await supabase
-            .from('categories')
+            .from('intraasia.categories')
             .select(`
                 id,
                 name,
@@ -110,7 +110,7 @@ export async function getSubcategories() {
         const supabase = createClient()
 
         const { data: subcategories, error } = await supabase
-            .from('subcategories')
+            .from('intraasia.subcategories')
             .select(`
                 id,
                 name,
@@ -139,7 +139,7 @@ export async function getBrands() {
         const supabase = createClient()
 
         const { data: brands, error } = await supabase
-            .from('brands')
+            .from('intraasia.brands')
             .select('*')
 
         if (error) {
@@ -160,7 +160,7 @@ export async function getFeatures() {
         const supabase = createClient()
 
         const { data: features, error } = await supabase
-            .from('features')
+            .from('intraasia.features')
             .select('*')
 
         if (error) {
