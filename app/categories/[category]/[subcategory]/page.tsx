@@ -164,6 +164,7 @@ export default function ProductsPage() {
                   </div>
                   <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
+                    <p className="text-sm text-gray-600 mb-1">Brand: <span className="font-medium text-gray-700">{product.brand}</span></p>
                     <p className="text-sm text-gray-600 mb-1">Supplier: <span className="font-medium text-gray-700">{product.supplier}</span></p>
                     <p className="text-gray-500 text-sm line-clamp-2 mb-2">{product.definition}</p>
                     <span className="text-xs text-gray-400">Added {new Date(product.dateAdded).toLocaleDateString()}</span>

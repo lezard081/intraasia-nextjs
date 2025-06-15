@@ -13,7 +13,7 @@ export interface Product {
   features: string[];
   dateAdded: string; // ISO date string format
   supplier: string; // New field for supplier name
+  brand: string; // New field for brand name
 }
 
 export type SortOption = 'alphabetical' | 'newest' | 'oldest' | 'supplier';
-

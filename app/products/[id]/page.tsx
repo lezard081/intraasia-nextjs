@@ -148,6 +148,10 @@ export default function ProductDetailsPage() {
               {/* Product Details */}
               <div className="w-full md:w-1/2">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
+                {/* Show Brand */}
+                <div className="mb-2 text-lg text-gray-600">
+                  <span className="font-semibold">Brand:</span> {product.brand}
+                </div>
 
                 <div className="mb-6">
                   <p className="text-sm text-gray-500">
