@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProductById } from '@/app/lib/data-client';
+import { fetchProductById } from '@/app/lib/data';
 import { Product } from '@/app/lib/types/products';
 
 export default function ProductDetailsPage() {
@@ -20,7 +20,7 @@ export default function ProductDetailsPage() {
     const fetchProduct = async () => {
       setIsLoading(true);
       try {
-        const fetchedProduct = await getProductById(productId);
+        const fetchedProduct = await fetchProductById(productId);
         if (fetchedProduct) {
           setProduct(fetchedProduct);
         } else {

@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useState, useRef, useEffect } from 'react';
-import { getProducts } from '@/app/lib/data-client';
-import { Product } from '@/app/lib/types/products';
+import { getCategoriesAndSubcategories } from '@/app/lib/data';
 
 const links = [
     {
@@ -22,53 +21,10 @@ const links = [
     },
 ]
 
-// Helper to get categories and subcategories from products data
-type CategoryMap = Record<string, Set<string>>;
-async function getCategoriesFromProducts() {
-    const products = await getProducts();
-    const map: CategoryMap = {};
-    products.forEach((p) => {
-        if (!map[p.category]) map[p.category] = new Set();
-        map[p.category].add(p.subcategory);
-    });
-    // Convert to array of { section, items }
-    return Object.entries(map).map(([section, subSet]) => ({
-        section,
-        items: Array.from(subSet).map(sub => ({
-            name: sub
-                .split('-')
-                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-                .join(' '),
-            href: `/categories/${section}/${sub}`
-        }))
-    }));
-}
-
 export default function NavLinks() {
     const pathname = usePathname();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [dynamicCategories, setDynamicCategories] = useState<Array<{
-        section: string;
-        items: Array<{ name: string; href: string }>;
-    }>>([]);
-    const [loading, setLoading] = useState(true);
-
-    // Load categories data
-    useEffect(() => {
-        async function loadCategories() {
-            try {
-                const categories = await getCategoriesFromProducts();
-                setDynamicCategories(categories);
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        loadCategories();
-    }, []);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -82,6 +38,28 @@ export default function NavLinks() {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
+    }, []);
+
+    const [dynamicCategories, setDynamicCategories] = useState<Array<{
+        section: string;
+        items: Array<{
+            name: string;
+            href: string;
+        }>;
+    }>>([]);
+
+    useEffect(() => {
+        async function fetchCategories() {
+            try {
+                const categories = await getCategoriesAndSubcategories();
+                setDynamicCategories(categories);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                setDynamicCategories([]);
+            }
+        }
+
+        fetchCategories();
     }, []);
 
     return (
@@ -116,38 +94,28 @@ export default function NavLinks() {
                 </button>
                 {isDropdownOpen && (
                     <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-[#1a2332] rounded shadow-lg z-20 py-2 border border-gray-200 dark:border-[#22304a]">
-                        {loading ? (
-                            <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
-                                Loading categories...
-                            </div>
-                        ) : dynamicCategories.length === 0 ? (
-                            <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
-                                No categories found
-                            </div>
-                        ) : (
-                            dynamicCategories.map((cat) => (
-                                <div key={cat.section} className="mb-2 last:mb-0">
-                                    <div className="px-4 py-2 text-xs font-bold text-[#0054A6] dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-[#14213d] rounded">
-                                        {cat.section.charAt(0).toUpperCase() + cat.section.slice(1)}
-                                    </div>
-                                    {cat.items.map((item) => (
-                                        <Link
-                                            key={item.href}
-                                            href={item.href}
-                                            className={clsx(
-                                                "block px-4 py-2 text-sm transition-colors",
-                                                pathname === item.href
-                                                    ? "text-[#0054A6] dark:text-blue-400 bg-gray-100 dark:bg-[#22304a] font-semibold"
-                                                    : "text-gray-700 dark:text-gray-100 hover:text-[#0054A6] dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-[#22304a]"
-                                            )}
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            {item.name}
-                                        </Link>
-                                    ))}
+                        {dynamicCategories.map((cat) => (
+                            <div key={cat.section} className="mb-2 last:mb-0">
+                                <div className="px-4 py-2 text-xs font-bold text-[#0054A6] dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-[#14213d] rounded">
+                                    {cat.section.charAt(0).toUpperCase() + cat.section.slice(1)}
                                 </div>
-                            ))
-                        )}
+                                {cat.items.map((item) => (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={clsx(
+                                            "block px-4 py-2 text-sm transition-colors",
+                                            pathname === item.href
+                                                ? "text-[#0054A6] dark:text-blue-400 bg-gray-100 dark:bg-[#22304a] font-semibold"
+                                                : "text-gray-700 dark:text-gray-100 hover:text-[#0054A6] dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-[#22304a]"
+                                        )}
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

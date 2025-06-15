@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProductsByCategory, sortProducts } from '@/app/lib/data-client';
+import { fetchProductsByCategory, sortProducts } from '@/app/lib/data';
 import { Product, SortOption } from '@/app/lib/types/products';
 import { cn } from '@/app/lib/utils';
 
@@ -22,7 +22,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const fetchedProducts = await getProductsByCategory(category, subcategory);
+        const fetchedProducts = await fetchProductsByCategory(category, subcategory);
         const sortedProducts = sortProducts(fetchedProducts, sortOption);
         setProducts(sortedProducts);
       } catch (error) {

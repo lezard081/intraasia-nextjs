@@ -3,64 +3,48 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProductsByCategory } from '@/app/lib/data-client';
+import { getProductsByCategory, products } from '@/app/lib/data/products';
 import { Product } from '@/app/lib/types/products';
 import { useEffect, useState } from 'react';
 
 // Dynamically generate subcategories from products data
-async function getSubcategories(category: string) {
-  const products = await getProductsByCategory(category);
+function getSubcategories(category: string) {
   const subMap: Record<string, { name: string; slug: string; description: string; image: string }> = {};
-
   products.forEach((p) => {
-    if (!subMap[p.subcategory]) {
-      subMap[p.subcategory] = {
-        name: p.subcategory
-          .split('-')
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(' '),
-        slug: p.subcategory,
-        description: p.definition,
-        image: p.image,
-      };
+    if (p.category === category) {
+      if (!subMap[p.subcategory]) {
+        subMap[p.subcategory] = {
+          name: p.subcategory
+            .split('-')
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' '),
+          slug: p.subcategory,
+          description: p.definition,
+          image: p.image,
+        };
+      }
     }
   });
-
   return Object.values(subMap);
 }
 
 export default function CategoryPage() {
   const params = useParams();
   const category = params.category as string;
-  const [subcategories, setSubcategories] = useState<Array<{ name: string; slug: string; description: string; image: string }>>([]);
   const [productCounts, setProductCounts] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      try {
-        // Get subcategories
-        const subs = await getSubcategories(category);
-        setSubcategories(subs);
-
-        // Get product counts for each subcategory
-        const counts: Record<string, number> = {};
-
-        for (const subcat of subs) {
-          const products = await getProductsByCategory(category, subcat.slug);
-          counts[subcat.slug] = products.length;
-        }
-
-        setProductCounts(counts);
-      } catch (error) {
-        console.error('Error loading category data:', error);
-      } finally {
-        setLoading(false);
-      }
+    // Get product counts for each subcategory
+    const counts: Record<string, number> = {};
+    
+    if (getSubcategories(category as string)) {
+      getSubcategories(category as string).forEach(subcat => {
+        const products = getProductsByCategory(category, subcat.slug);
+        counts[subcat.slug] = products.length;
+      });
     }
-
-    loadData();
+    
+    setProductCounts(counts);
   }, [category]);
 
   // Format category for display
@@ -72,6 +56,7 @@ export default function CategoryPage() {
   };
 
   const categoryDisplay = formatText(category);
+  const subcategories = getSubcategories(category);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -89,12 +74,8 @@ export default function CategoryPage() {
       <section className="w-full py-12 bg-gray-50">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <h2 className="text-2xl font-bold mb-8">Browse {categoryDisplay} Categories</h2>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <h3 className="text-xl text-gray-600">Loading...</h3>
-            </div>
-          ) : subcategories.length === 0 ? (
+          
+          {subcategories.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-xl text-gray-600">No categories found</h3>
             </div>

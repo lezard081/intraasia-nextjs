@@ -3,10 +3,9 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import Image from 'next/image';
-import { getHeroSlides } from '@/app/lib/data-client';
+import { heroSlides } from '@/app/lib/data/heroSlides';
 import { SlideData } from '@/app/lib/types/slides';
 import { cn } from '@/app/lib/utils';
-import { useState, useEffect } from 'react';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -14,32 +13,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 const HeroCarousel = () => {
-    const [slides, setSlides] = useState<SlideData[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function loadSlides() {
-            try {
-                const heroSlides = await getHeroSlides();
-                setSlides(heroSlides);
-            } catch (error) {
-                console.error('Error loading hero slides:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        loadSlides();
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="relative w-full h-full flex items-center justify-center bg-gray-200">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
-    }
-
     return (
         <div className="relative w-full h-full overflow-hidden">
             <Swiper
@@ -72,7 +45,7 @@ const HeroCarousel = () => {
                 loop={true}
                 className="w-full h-full"
             >
-                {slides.map((slide: SlideData, index: number) => (
+                {heroSlides.map((slide: SlideData, index: number) => (
                     <SwiperSlide key={slide.id} className="relative">
                         <div className="absolute inset-0 bg-black/20 z-10"></div>
                         <Image

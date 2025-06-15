@@ -16,3 +16,4 @@ export interface Product {
 }
 
 export type SortOption = 'alphabetical' | 'newest' | 'oldest' | 'supplier';
+
