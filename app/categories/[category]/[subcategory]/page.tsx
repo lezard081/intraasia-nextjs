@@ -66,13 +66,21 @@ export default function ProductsPage() {
       {/* Products Section */}
       <section className="w-full py-12 bg-gray-50">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <h2 className="text-2xl font-bold mb-4 md:mb-0">{categoryDisplay} Products</h2>
-            <div className="flex gap-2">
-              <button onClick={() => handleSortChange('alphabetical')} className={cn('btn', sortOption === 'alphabetical' && 'btn-active')}>A-Z</button>
-              <button onClick={() => handleSortChange('newest')} className={cn('btn', sortOption === 'newest' && 'btn-active')}>Newest</button>
-              <button onClick={() => handleSortChange('oldest')} className={cn('btn', sortOption === 'oldest' && 'btn-active')}>Oldest</button>
-              <button onClick={() => handleSortChange('supplier')} className={cn('btn', sortOption === 'supplier' && 'btn-active')}>Supplier</button>
+            <div className="w-full md:w-auto flex justify-end">
+              <label htmlFor="sort" className="sr-only">Sort by</label>
+              <select
+                id="sort"
+                value={sortOption}
+                onChange={e => handleSortChange(e.target.value as SortOption)}
+                className="block w-full md:w-48 px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-[#1a2332] text-gray-700 dark:text-gray-100"
+              >
+                <option value="alphabetical">A-Z</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="supplier">Supplier</option>
+              </select>
             </div>
           </div>
           {isLoading ? (

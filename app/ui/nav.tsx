@@ -62,7 +62,7 @@ export default function Nav() {
                 </Link>
 
                 {/* Desktop Navigation */}
-                <div className="hidden md:flex grow justify-end">
+                <div className="hidden md:flex grow justify-end items-center gap-8">
                     <Navlinks />
                 </div>
 
@@ -128,16 +128,18 @@ export default function Nav() {
                                 ) : (
                                     dynamicCategories.map((cat) => (
                                         <li key={cat.section}>
-                                            <span className="block px-2 py-1 text-sm font-bold text-[#0054A6] dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-[#14213d] rounded mb-1">{cat.section.charAt(0).toUpperCase() + cat.section.slice(1)}</span>
+                                            <span className="block px-2 py-1 text-sm font-bold text-[#0054A6] dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-[#14213d] rounded mb-1">
+                                                {cat.section.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                            </span>
                                             <ul className="pl-4 space-y-1 mt-1">
                                                 {cat.items.map((item) => (
                                                     <li key={item.href}>
-                                                        <Link href={item.href} className={`block px-2 py-1 text-sm rounded transition-colors ${
+                                                        <Link href={item.href} className={`block px-2 py-1 text-sm rounded transition-colors font-medium capitalize ${
                                                             pathname === item.href
                                                                 ? 'text-[#0054A6] dark:text-blue-400 bg-gray-100 dark:bg-[#22304a] font-semibold'
                                                                 : 'text-gray-600 dark:text-gray-100 hover:text-[#0054A6] dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-[#22304a]'
                                                         }`}>
-                                                            {item.name}
+                                                            {item.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                                                         </Link>
                                                     </li>
                                                 ))}
