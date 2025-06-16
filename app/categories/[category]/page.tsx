@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 // Dynamically generate subcategories from products data
 async function getSubcategories(category: string) {
   const products = await getProductsByCategory(category);
+  console.log('Fetched products for category', category, ':', products);
   const subMap: Record<string, { name: string; slug: string; description: string; image: string }> = {};
 
   products.forEach((p) => {
@@ -35,13 +36,16 @@ export default function CategoryPage() {
   const [subcategories, setSubcategories] = useState<Array<{ name: string; slug: string; description: string; image: string }>>([]);
   const [productCounts, setProductCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<any>(null);
 
   useEffect(() => {
     async function loadData() {
       setLoading(true);
+      setFetchError(null);
       try {
         // Get subcategories
         const subs = await getSubcategories(category);
+        console.log('Fetched subcategories:', subs);
         setSubcategories(subs);
 
         // Get product counts for each subcategory
@@ -49,12 +53,14 @@ export default function CategoryPage() {
 
         for (const subcat of subs) {
           const products = await getProductsByCategory(category, subcat.slug);
+          console.log(`Products for subcategory ${subcat.slug}:`, products);
           counts[subcat.slug] = products.length;
         }
 
         setProductCounts(counts);
       } catch (error) {
         console.error('Error loading category data:', error);
+        setFetchError(error);
       } finally {
         setLoading(false);
       }
@@ -94,6 +100,10 @@ export default function CategoryPage() {
             <div className="text-center py-12">
               <h3 className="text-xl text-gray-600">Loading...</h3>
             </div>
+          ) : fetchError ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl text-red-600">Error loading data: {String(fetchError)}</h3>
+            </div>
           ) : subcategories.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-xl text-gray-600">No categories found</h3>
@@ -131,7 +141,7 @@ export default function CategoryPage() {
                     <p className="text-gray-700 dark:text-gray-200 mb-3 text-base font-medium line-clamp-2">{subcategory.description}</p>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-sm text-gray-500 dark:text-gray-300">
-                        {productCounts[subcategory.slug] || 0} Products
+                        {productCounts[decodeURIComponent(subcategory.slug)] || 0} Products
                       </span>
                       <span className="text-sm font-bold text-blue-600 dark:text-blue-300 uppercase tracking-wide group-hover:underline">View All</span>
                     </div>

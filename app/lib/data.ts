@@ -8,7 +8,7 @@ export async function getProducts(): Promise<Product[]> {
     const supabase = createClient(cookieStore)
 
     const { data: products, error } = await supabase
-        .from('intraasia.products')
+        .from('products')
         .select(`
             id,
             name,
@@ -53,7 +53,7 @@ export async function getProducts(): Promise<Product[]> {
             name: product.name,
             image: product.image || '/product-images/placeholder.jpg',
             category: category ? category.name.toLowerCase() : '',
-            subcategory: subcategory ? subcategory.name.toLowerCase().replace(/\s+/g, '-') : '',
+            subcategory: subcategory ? subcategory.name.toLowerCase() : '',
             brand: brand ? brand.name : '',
             definition: product.description || '',
             features: Array.isArray(product.product_features)
@@ -71,7 +71,7 @@ export async function getCategories() {
     const supabase = createClient(cookieStore)
 
     const { data: categories, error } = await supabase
-        .from('intraasia.categories')
+        .from('categories')
         .select(`
             id,
             name,
@@ -95,7 +95,7 @@ export async function getSubcategories() {
     const supabase = createClient(cookieStore)
 
     const { data: subcategories, error } = await supabase
-        .from('intraasia.subcategories')
+        .from('subcategories')
         .select(`
             id,
             name,
@@ -120,7 +120,7 @@ export async function getBrands() {
     const supabase = createClient(cookieStore)
 
     const { data: brands, error } = await supabase
-        .from('intraasia.brands')
+        .from('brands')
         .select('*')
 
     if (error) {
@@ -137,7 +137,7 @@ export async function getFeatures() {
     const supabase = createClient(cookieStore)
 
     const { data: features, error } = await supabase
-        .from('intraasia.features')
+        .from('features')
         .select('*')
 
     if (error) {

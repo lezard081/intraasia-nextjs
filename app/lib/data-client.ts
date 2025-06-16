@@ -8,7 +8,7 @@ export async function getProducts(): Promise<Product[]> {
         const supabase = createClient()
 
         const { data: products, error } = await supabase
-            .from('intraasia.products')
+            .from('products')
             .select(`
                 id,
                 name,
@@ -59,7 +59,7 @@ export async function getProducts(): Promise<Product[]> {
                 id: product.id.toString(),
                 name: product.name || 'Unnamed Product',
                 image: product.image || '/product-images/placeholder.jpg',
-                category: (product.subcategories.categories.name || 'uncategorized').toLowerCase(),
+                category: (product.subcategories.categories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
                 subcategory: (product.subcategories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
                 definition: product.description || '',
                 features: product.product_features ? 
@@ -82,7 +82,7 @@ export async function getCategories() {
         const supabase = createClient()
 
         const { data: categories, error } = await supabase
-            .from('intraasia.categories')
+            .from('categories')
             .select(`
                 id,
                 name,
@@ -97,7 +97,17 @@ export async function getCategories() {
             return []
         }
 
-        return categories || []
+        // Add slug to each category
+        return (categories || []).map((cat: any) => ({
+            ...cat,
+            slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
+            subcategories: cat.subcategories
+                ? cat.subcategories.map((sub: any) => ({
+                    ...sub,
+                    slug: sub.name.toLowerCase().replace(/\s+/g, '-')
+                }))
+                : []
+        }))
     } catch (error) {
         console.error('Error in getCategories:', error)
         return []
@@ -110,7 +120,7 @@ export async function getSubcategories() {
         const supabase = createClient()
 
         const { data: subcategories, error } = await supabase
-            .from('intraasia.subcategories')
+            .from('subcategories')
             .select(`
                 id,
                 name,
@@ -139,7 +149,7 @@ export async function getBrands() {
         const supabase = createClient()
 
         const { data: brands, error } = await supabase
-            .from('intraasia.brands')
+            .from('brands')
             .select('*')
 
         if (error) {
@@ -160,7 +170,7 @@ export async function getFeatures() {
         const supabase = createClient()
 
         const { data: features, error } = await supabase
-            .from('intraasia.features')
+            .from('features')
             .select('*')
 
         if (error) {
@@ -175,18 +185,24 @@ export async function getFeatures() {
     }
 }
 
+// Helper to normalize slugs (lowercase, replace spaces with dashes)
+function toSlug(str: string) {
+    return str.toLowerCase().replace(/\s+/g, '-');
+}
+
 // Helper function to get products by category and subcategory
 export async function getProductsByCategory(categoryName: string, subcategoryName?: string): Promise<Product[]> {
     try {
-        const products = await getProducts()
-
-        return products.filter(product => 
-            product.category === categoryName && 
-            (subcategoryName ? product.subcategory === subcategoryName : true)
-        )
+        const products = await getProducts();
+        const categorySlug = toSlug(categoryName);
+        const subcategorySlug = subcategoryName ? toSlug(subcategoryName) : undefined;
+        return products.filter(product =>
+            toSlug(product.category) === categorySlug &&
+            (subcategorySlug ? toSlug(product.subcategory) === subcategorySlug : true)
+        );
     } catch (error) {
-        console.error('Error in getProductsByCategory:', error)
-        return []
+        console.error('Error in getProductsByCategory:', error);
+        return [];
     }
 }
 
