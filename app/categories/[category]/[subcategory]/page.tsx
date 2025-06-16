@@ -41,7 +41,7 @@ export default function ProductsPage() {
 
   // Format category and subcategory for display
   const formatText = (text: string) => {
-    return text
+    return decodeURIComponent(text)
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');

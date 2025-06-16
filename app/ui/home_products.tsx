@@ -61,7 +61,7 @@ export default function HomeProducts() {
               return (
                 <Link
                   key={category}
-                  href={`/categories/${category}`}
+                  href={`/categories/${encodeURIComponent(category)}`}
                   ref={el => { cardsRef.current[idx] = el; }}
                   data-idx={idx}
                   className="opacity-0 relative flex-1 min-h-[220px] h-64 rounded-2xl overflow-hidden shadow-lg group transition-transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0054A6]"

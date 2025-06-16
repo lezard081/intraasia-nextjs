@@ -304,11 +304,11 @@ export async function getCategoriesAndSubcategories() {
 
     // Transform the data to the format needed for the navigation
     return categories.map(category => ({
-        section: category.name,
+        section: decodeURIComponent(category.name),
         items: subcategories
             .filter(sub => sub.category_id === category.id)
             .map(sub => ({
-                name: sub.name
+                name: decodeURIComponent(sub.name)
                     .split('-')
                     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
                     .join(' '),
