@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getProductsByCategory, sortProducts } from '@/app/lib/data-client';
 import { Product, SortOption } from '@/app/lib/types/products';
 import { cn } from '@/app/lib/utils';
+import { ProductCardSkeleton } from '@/app/ui/skeletons';
 
 export default function ProductsPage() {
   const params = useParams();
@@ -65,110 +66,60 @@ export default function ProductsPage() {
       {/* Products Section */}
       <section className="w-full py-12 bg-gray-50">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          {/* Sorting Controls */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-            <h2 className="text-2xl font-bold mb-4 sm:mb-0">
-              {products.length} {products.length === 1 ? 'Product' : 'Products'} Found
-            </h2>
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-600">Sort by:</span>
-              <div className="flex space-x-1">
-                <button
-                  onClick={() => handleSortChange('alphabetical')}
-                  className={cn(
-                    "px-3 py-1 text-sm rounded-md transition-colors",
-                    sortOption === 'alphabetical'
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  )}
-                >
-                  A-Z
-                </button>
-                <button
-                  onClick={() => handleSortChange('newest')}
-                  className={cn(
-                    "px-3 py-1 text-sm rounded-md transition-colors",
-                    sortOption === 'newest'
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  )}
-                >
-                  Newest
-                </button>
-                <button
-                  onClick={() => handleSortChange('oldest')}
-                  className={cn(
-                    "px-3 py-1 text-sm rounded-md transition-colors",
-                    sortOption === 'oldest'
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  )}
-                >
-                  Oldest
-                </button>
-                <button
-                  onClick={() => handleSortChange('supplier')}
-                  className={cn(
-                    "px-3 py-1 text-sm rounded-md transition-colors",
-                    sortOption === 'supplier'
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  )}
-                >
-                  Supplier
-                </button>
-              </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <h2 className="text-2xl font-bold mb-4 md:mb-0">{categoryDisplay} Products</h2>
+            <div className="flex gap-2">
+              <button onClick={() => handleSortChange('alphabetical')} className={cn('btn', sortOption === 'alphabetical' && 'btn-active')}>A-Z</button>
+              <button onClick={() => handleSortChange('newest')} className={cn('btn', sortOption === 'newest' && 'btn-active')}>Newest</button>
+              <button onClick={() => handleSortChange('oldest')} className={cn('btn', sortOption === 'oldest' && 'btn-active')}>Oldest</button>
+              <button onClick={() => handleSortChange('supplier')} className={cn('btn', sortOption === 'supplier' && 'btn-active')}>Supplier</button>
             </div>
           </div>
-
-          {/* Loading State */}
-          {isLoading && (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
             </div>
-          )}
-
-          {/* No Products Found */}
-          {!isLoading && products.length === 0 && (
+          ) : products.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-xl text-gray-600">No products found</h3>
             </div>
-          )}
-
-          {/* Products Grid */}
-          {!isLoading && products.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <Link 
-                  href={`/products/${product.id}`} 
-                  key={product.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 hover:shadow-lg"
-                >
-                  <div className="relative h-48 bg-gray-200">
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                      {/* Placeholder for missing images */}
-                      <span>Product Image</span>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product, idx) => (
+                <React.Suspense key={product.id || idx} fallback={<ProductCardSkeleton />}>
+                  <Link
+                    href={`/products/${product.id}`}
+                    key={product.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 hover:shadow-lg"
+                  >
+                    <div className="relative h-48 bg-gray-200">
+                      <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                        {/* Placeholder for missing images */}
+                        <span>Product Image</span>
+                      </div>
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        onError={(e) => {
+                          // Hide the image on error, showing the placeholder
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
                     </div>
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      onError={(e) => {
-                        // Hide the image on error, showing the placeholder
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
-                    <p className="text-sm text-gray-600 mb-1">Supplier: <span className="font-medium text-gray-700">{product.supplier}</span></p>
-                    <p className="text-gray-500 text-sm line-clamp-2 mb-2">{product.definition}</p>
-                    <span className="text-xs text-gray-400">Added {new Date(product.dateAdded).toLocaleDateString()}</span>
-                  </div>
-                </Link>
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
+                      <p className="text-sm text-gray-600 mb-1">Supplier: <span className="font-medium text-gray-700">{product.supplier}</span></p>
+                      <p className="text-gray-500 text-sm line-clamp-2 mb-2">{product.definition}</p>
+                      <span className="text-xs text-gray-400">Added {new Date(product.dateAdded).toLocaleDateString()}</span>
+                    </div>
+                  </Link>
+                </React.Suspense>
               ))}
             </div>
           )}

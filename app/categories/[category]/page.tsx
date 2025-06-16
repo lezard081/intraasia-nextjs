@@ -1,11 +1,13 @@
 'use client';
 
+import React from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getProductsByCategory } from '@/app/lib/data-client';
 import { Product } from '@/app/lib/types/products';
 import { useEffect, useState } from 'react';
+import { Skeleton, SubcategoryCardSkeleton } from '@/app/ui/skeletons';
 
 // Dynamically generate subcategories from products data
 async function getSubcategories(category: string) {
@@ -97,8 +99,10 @@ export default function CategoryPage() {
           <h2 className="text-2xl font-bold mb-8">Browse {categoryDisplay} Categories</h2>
 
           {loading ? (
-            <div className="text-center py-12">
-              <h3 className="text-xl text-gray-600">Loading...</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <SubcategoryCardSkeleton key={i} />
+              ))}
             </div>
           ) : fetchError ? (
             <div className="text-center py-12">
@@ -110,43 +114,45 @@ export default function CategoryPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {subcategories.map((subcategory) => (
-                <Link 
-                  href={`/categories/${category}/${subcategory.slug}`} 
-                  key={subcategory.slug}
-                  className="group bg-white dark:bg-[#1a2332] rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105 hover:shadow-2xl border-2 border-[#0054A6] dark:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
-                >
-                  <div className="relative h-52 bg-gray-200 dark:bg-[#22304a]">
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-100">
-                      {/* Placeholder for missing images */}
-                      <span>Category Image</span>
+              {subcategories.map((subcategory, idx) => (
+                <React.Suspense key={subcategory.slug || idx} fallback={<SubcategoryCardSkeleton />}>
+                  <Link
+                    href={`/categories/${category}/${subcategory.slug}`}
+                    key={subcategory.slug}
+                    className="group bg-white dark:bg-[#1a2332] rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105 hover:shadow-2xl border-2 border-[#0054A6] dark:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
+                  >
+                    <div className="relative h-52 bg-gray-200 dark:bg-[#22304a]">
+                      <div className="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-100">
+                        {/* Placeholder for missing images */}
+                        <span>Category Image</span>
+                      </div>
+                      <Image
+                        src={subcategory.image}
+                        alt={subcategory.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        onError={(e) => {
+                          // Hide the image on error, showing the placeholder
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end justify-center p-4">
+                        <h3 className="text-2xl font-extrabold text-white drop-shadow-lg tracking-wide uppercase group-hover:text-blue-200 transition-colors">{subcategory.name}</h3>
+                      </div>
                     </div>
-                    <Image
-                      src={subcategory.image}
-                      alt={subcategory.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      onError={(e) => {
-                        // Hide the image on error, showing the placeholder
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end justify-center p-4">
-                      <h3 className="text-2xl font-extrabold text-white drop-shadow-lg tracking-wide uppercase group-hover:text-blue-200 transition-colors">{subcategory.name}</h3>
+                    <div className="p-6 bg-white dark:bg-[#1a2332]">
+                      <p className="text-gray-700 dark:text-gray-200 mb-3 text-base font-medium line-clamp-2">{subcategory.description}</p>
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-sm text-gray-500 dark:text-gray-300">
+                          {productCounts[decodeURIComponent(subcategory.slug)] || 0} Products
+                        </span>
+                        <span className="text-sm font-bold text-blue-600 dark:text-blue-300 uppercase tracking-wide group-hover:underline">View All</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6 bg-white dark:bg-[#1a2332]">
-                    <p className="text-gray-700 dark:text-gray-200 mb-3 text-base font-medium line-clamp-2">{subcategory.description}</p>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-sm text-gray-500 dark:text-gray-300">
-                        {productCounts[decodeURIComponent(subcategory.slug)] || 0} Products
-                      </span>
-                      <span className="text-sm font-bold text-blue-600 dark:text-blue-300 uppercase tracking-wide group-hover:underline">View All</span>
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                </React.Suspense>
               ))}
             </div>
           )}
