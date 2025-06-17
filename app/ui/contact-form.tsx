@@ -5,13 +5,14 @@ export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<{ email?: string }>({});
+  // Add honeypot field for spam protection
+  const [botField, setBotField] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const validateEmail = (email: string) => {
-    // Simple email regex for validation
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
@@ -23,66 +24,77 @@ export default function ContactForm() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    let valid = true;
-    const newErrors: { email?: string } = {};
-    if (!validateEmail(form.email)) {
-      newErrors.email = 'Please enter a valid email address.';
-      valid = false;
-    }
-    setErrors(newErrors);
-    if (!valid) return;
-    // Here you would handle sending the form data to your backend or API
-    setSubmitted(true);
-  };
-
   if (submitted) {
-    return <div className="p-4 bg-[#e6f0fa] text-[#0054A6] rounded border border-[#0054A6]">Thank you for contacting us!</div>;
+    return (
+      <div className="text-green-600 font-semibold text-center py-8">
+        Thank you for contacting us! We will be in touch with you soon!
+      </div>
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto bg-white p-6 rounded-lg shadow border border-[#e5e7eb]">
+    <form
+      name="contact"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      className="space-y-4 max-w-md mx-auto"
+      onSubmit={() => setSubmitted(true)}
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      {/* Honeypot field for spam protection */}
+      <div className="hidden">
+        <label>
+          Don’t fill this out if you're human:
+          <input name="bot-field" value={botField} onChange={e => setBotField(e.target.value)} />
+        </label>
+      </div>
+      {/* Netlify reCAPTCHA widget */}
+      <div data-netlify-recaptcha="true" className="mb-4" />
       <div>
-        <label className="block mb-1 font-medium text-[#0054A6]">Name</label>
+        <label htmlFor="name" className="block font-medium mb-1">Name</label>
         <input
           type="text"
+          id="name"
           name="name"
           value={form.name}
           onChange={handleChange}
           required
-          className="w-full border border-[#949494] rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0054A6] focus:border-[#0054A6] dark:text-gray-800"
-          placeholder="Name"
+          className="w-full border border-gray-300 rounded px-3 py-2"
         />
       </div>
       <div>
-        <label className="block mb-1 font-medium text-[#0054A6]">Email</label>
+        <label htmlFor="email" className="block font-medium mb-1">Email</label>
         <input
           type="email"
+          id="email"
           name="email"
           value={form.email}
           onChange={handleChange}
           onBlur={handleEmailBlur}
           required
-          className="w-full border border-[#949494] rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0054A6] focus:border-[#0054A6] dark:text-gray-800"
-          placeholder="Email"
+          className="w-full border border-gray-300 rounded px-3 py-2"
         />
-        {errors.email && (
-          <p className="text-red-600 text-sm mt-1">{errors.email}</p>
-        )}
+        {errors.email && <div className="text-red-600 text-sm mt-1">{errors.email}</div>}
       </div>
       <div>
-        <label className="block mb-1 font-medium text-[#0054A6]">Message</label>
+        <label htmlFor="message" className="block font-medium mb-1">Message</label>
         <textarea
+          id="message"
           name="message"
           value={form.message}
           onChange={handleChange}
           required
-          className="w-full border border-[#949494] rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0054A6] focus:border-[#0054A6] dark:text-gray-800"
-          rows={4}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          rows={5}
         />
       </div>
-      <button type="submit" className="bg-[#0054A6] text-white px-4 py-2 rounded hover:bg-[#003e7c] transition-colors font-semibold shadow">Send</button>
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+      >
+        Send Message
+      </button>
     </form>
   );
 }
