@@ -1,5 +1,7 @@
-import Image from "next/image";
+'use client';
+
 import HeroCarousel from "@/app/ui/hero-carousel";
+import HomeProducts from "@/app/ui/home_products";
 
 export default function Home() {
   return (
@@ -9,11 +11,11 @@ export default function Home() {
         <HeroCarousel />
       </section>
 
-      {/* Our Products Section */}
+      {/* Our Products Section (Blue) */}
       <section className="w-full py-16 bg-[#0054A6] text-white">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Our Products</h2>
-          <div className="prose prose-lg prose-invert mx-auto">
+          <div className="prose prose-lg prose-invert mx-auto mb-10">
             <p className="mb-4">
               Intra Asia is a trusted name in the supply and servicing of high-quality laundry and kitchen equipment across the region. We specialize in providing both equipment solutions and preventive maintenance services, ensuring optimal performance and extended lifespan of our clients' investments.
             </p>
@@ -26,6 +28,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Category Cards Section (White) */}
+      <HomeProducts />
     </div>
   );
 }
