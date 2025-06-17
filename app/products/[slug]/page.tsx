@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getProductBySlug } from '@/app/lib/data-client';
 import { Product } from '@/app/lib/types/products';
 import { ProductCardSkeleton } from '@/app/ui/skeletons';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -56,6 +57,18 @@ export default function ProductDetailsPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Breadcrumb Navigation */}
+      {product && (
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: formatText(product.category), href: `/categories/${product.category}` },
+            { label: formatText(product.subcategory), href: `/categories/${product.category}/${product.subcategory}` },
+            { label: product.name }
+          ]}
+        />
+      )}
+
       {/* Loading State */}
       {isLoading && (
         <div className="flex justify-center items-center h-64">
@@ -89,31 +102,6 @@ export default function ProductDetailsPage() {
           ) : (
             <React.Suspense fallback={<ProductCardSkeleton />}>
               <>
-                {/* Breadcrumb Navigation */}
-                <div className="bg-gray-100">
-                  <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-                    <div className="flex items-center text-sm text-gray-600 py-3">
-                      <Link href="/" className="hover:text-blue-600">Home</Link>
-                      <span className="mx-2">/</span>
-                      <Link
-                        href={`/categories/${product.category}`}
-                        className="hover:text-blue-600"
-                      >
-                        {formatText(product.category)}
-                      </Link>
-                      <span className="mx-2">/</span>
-                      <Link
-                        href={`/categories/${product.category}/${product.subcategory}`}
-                        className="hover:text-blue-600"
-                      >
-                        {formatText(product.subcategory)}
-                      </Link>
-                      <span className="mx-2">/</span>
-                      <span className="text-gray-800 font-medium">{product.name}</span>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Product Content */}
                 <div className="container mx-auto px-4 md:px-8 max-w-6xl py-8 md:py-12">
                   <button
