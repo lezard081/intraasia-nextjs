@@ -2,6 +2,7 @@
 
 import HeroCarousel from "@/app/ui/hero-carousel";
 import HomeProducts from "@/app/ui/home_products";
+import OurBrands from './ui/our-brands';
 
 export default function Home() {
   return (
@@ -31,6 +32,9 @@ export default function Home() {
 
       {/* Category Cards Section (White) */}
       <HomeProducts />
+
+      {/* Our Brands Section (White) */}
+      <OurBrands />
     </div>
   );
 }
