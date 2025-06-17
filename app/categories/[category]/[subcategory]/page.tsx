@@ -53,6 +53,21 @@ export default function ProductsPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Breadcrumb Navigation */}
+      <nav className="bg-gray-100 py-3 px-4 md:px-8">
+        <ol className="flex items-center space-x-2 text-sm text-gray-600">
+          <li>
+            <Link href="/" className="hover:text-blue-600">Home</Link>
+          </li>
+          <li>/</li>
+          <li>
+            <Link href={`/categories/${category}`} className="hover:text-blue-600">{categoryDisplay}</Link>
+          </li>
+          <li>/</li>
+          <li className="text-gray-800 font-medium">{subcategoryDisplay}</li>
+        </ol>
+      </nav>
+
       {/* Banner Section */}
       <section className="relative w-full h-[250px] bg-[#0054A6]">
         <div className="absolute inset-0 flex items-center justify-center">
