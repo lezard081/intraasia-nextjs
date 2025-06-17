@@ -4,14 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProductById } from '@/app/lib/data-client';
+import { getProductBySlug } from '@/app/lib/data-client';
 import { Product } from '@/app/lib/types/products';
 import { ProductCardSkeleton } from '@/app/ui/skeletons';
 
 export default function ProductDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const productId = params.id as string;
+  const productSlug = params.slug as string;
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +21,7 @@ export default function ProductDetailsPage() {
     const fetchProduct = async () => {
       setIsLoading(true);
       try {
-        const fetchedProduct = await getProductById(productId);
+        const fetchedProduct = await getProductBySlug(productSlug);
         if (fetchedProduct) {
           setProduct(fetchedProduct);
         } else {
@@ -36,7 +36,7 @@ export default function ProductDetailsPage() {
     };
 
     fetchProduct();
-  }, [productId]);
+  }, [productSlug]);
 
   // Format category and subcategory for display
   const formatText = (text: string) => {
@@ -90,9 +90,9 @@ export default function ProductDetailsPage() {
             <React.Suspense fallback={<ProductCardSkeleton />}>
               <>
                 {/* Breadcrumb Navigation */}
-                <div className="bg-gray-100 py-3">
+                <div className="bg-gray-100">
                   <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-gray-600 py-3">
                       <Link href="/" className="hover:text-blue-600">Home</Link>
                       <span className="mx-2">/</span>
                       <Link

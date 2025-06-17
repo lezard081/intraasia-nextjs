@@ -11,6 +11,7 @@ export async function getProducts(): Promise<Product[]> {
         .from('products')
         .select(`
             id,
+            slug,
             name,
             description,
             image,
@@ -42,6 +43,7 @@ export async function getProducts(): Promise<Product[]> {
         console.error('Error fetching products:', error, products)
         return []
     }
+    console.log('Fetched products:', products)
 
     // Transform the data to match the Product interface
     return products.map(product => {
@@ -50,6 +52,7 @@ export async function getProducts(): Promise<Product[]> {
         const brand = product.brands?.[0];
         return {
             id: product.id.toString(),
+            slug: product.slug,
             name: product.name,
             image: product.image || '/product-images/placeholder.jpg',
             category: category ? category.name.toLowerCase() : '',
@@ -162,6 +165,12 @@ export async function getProductsByCategory(categoryName: string, subcategoryNam
 export async function getProductById(id: string): Promise<Product | undefined> {
     const products = await getProducts()
     return products.find(product => product.id === id)
+}
+
+// Helper function to get a product by slug
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+    const products = await getProducts();
+    return products.find(product => product.slug === slug);
 }
 
 // Helper function to sort products

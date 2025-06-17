@@ -98,7 +98,7 @@ export default function ProductsPage() {
               {products.map((product, idx) => (
                 <React.Suspense key={product.id || idx} fallback={<ProductCardSkeleton />}>
                   <Link
-                    href={`/products/${product.id}`}
+                    href={`/products/${product.slug}`}
                     key={product.id}
                     className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 hover:shadow-lg"
                   >

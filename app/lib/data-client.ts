@@ -11,6 +11,7 @@ export async function getProducts(): Promise<Product[]> {
             .from('products')
             .select(`
                 id,
+                slug,
                 name,
                 description,
                 image,
@@ -57,6 +58,7 @@ export async function getProducts(): Promise<Product[]> {
             )
             .map(product => ({
                 id: product.id.toString(),
+                slug: product.slug,
                 name: product.name || 'Unnamed Product',
                 image: product.image || '/product-images/placeholder.jpg',
                 category: (product.subcategories.categories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
@@ -215,6 +217,12 @@ export async function getProductById(id: string): Promise<Product | undefined> {
         console.error('Error in getProductById:', error)
         return undefined
     }
+}
+
+// Helper function to get a product by slug
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+    const products = await getProducts();
+    return products.find(product => product.slug === slug);
 }
 
 // Helper function to sort products
