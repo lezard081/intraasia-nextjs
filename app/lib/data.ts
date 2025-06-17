@@ -63,7 +63,6 @@ export async function getProducts(): Promise<Product[]> {
                 ? product.product_features.map(pf => pf.features?.[0]?.name || '').filter(Boolean)
                 : [],
             dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
-            supplier: brand ? brand.name : ''
         }
     })
 }

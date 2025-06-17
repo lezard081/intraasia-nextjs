@@ -63,6 +63,7 @@ export async function getProducts(): Promise<Product[]> {
                 image: product.image || '/product-images/placeholder.jpg',
                 category: (product.subcategories.categories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
                 subcategory: (product.subcategories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
+                brand: product.brands.name || 'Unknown Brand',
                 definition: product.description || '',
                 features: product.product_features ? 
                     product.product_features
@@ -70,7 +71,6 @@ export async function getProducts(): Promise<Product[]> {
                         .map(pf => pf.features.name || 'Unnamed Feature') : 
                     [],
                 dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
-                supplier: product.brands.name || 'Unknown Supplier'
             }))
     } catch (error) {
         console.error('Error in getProducts:', error)

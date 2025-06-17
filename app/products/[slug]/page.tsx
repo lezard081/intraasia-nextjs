@@ -8,6 +8,7 @@ import { getProductBySlug } from '@/app/lib/data-client';
 import { Product } from '@/app/lib/types/products';
 import { ProductCardSkeleton } from '@/app/ui/skeletons';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
+import ContactForm from '@/app/ui/contact-form';
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -152,7 +153,7 @@ export default function ProductDetailsPage() {
                           Added on {new Date(product.dateAdded).toLocaleDateString()}
                         </p>
                         <p className="text-sm text-gray-500">
-                          Supplier: <span className="font-medium text-gray-700">{product.supplier}</span>
+                          Brand: <span className="font-medium text-gray-700">{product.brand}</span>
                         </p>
                       </div>
 
@@ -175,6 +176,17 @@ export default function ProductDetailsPage() {
                     </div>
                   </div>
                 </div>
+                {/* Contact Form Section */}
+                <section className="w-full py-12 bg-white border-t mt-12">
+                  <div className="container mx-auto px-4 md:px-8 max-w-2xl">
+                    <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Contact Us About This Product</h2>
+                    <p className="text-gray-600 mb-8 text-center">
+                      Have questions or want to inquire about{' '}
+                      <span className="font-semibold">{product.name}</span>? Fill out the form below and our team will get back to you promptly.
+                    </p>
+                    <ContactForm defaultMessage={`Hi IntraAsia, I would like to know more about: ${product.name} Thanks!`} />
+                  </div>
+                </section>
               </>
             </React.Suspense>
           )}

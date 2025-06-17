@@ -1,8 +1,11 @@
 'use client';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+export default function ContactForm({ defaultMessage }: { defaultMessage?: string }) {
+  const formattedDefaultMessage = defaultMessage
+    ? `Hello IntraAsia Team,\n\nI am interested in learning more about: ${defaultMessage.replace(/^.*about: /, '').replace(/ Thanks!?$/, '')}.\n\nCould you please provide me with more information?\n\nThank you!`
+    : '';
+  const [form, setForm] = useState({ name: '', email: '', message: formattedDefaultMessage });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<{ email?: string }>({});
   // Add honeypot field for spam protection
@@ -23,6 +26,16 @@ export default function ContactForm() {
       setErrors((prev) => ({ ...prev, email: undefined }));
     }
   };
+
+  // Update message if defaultMessage changes (e.g., when product changes)
+  useEffect(() => {
+    if (defaultMessage) {
+      setForm((prev) => ({
+        ...prev,
+        message: `Hello IntraAsia Team,\n\nI am interested in learning more about: ${defaultMessage.replace(/^.*about: /, '').replace(/ Thanks!?$/, '')}.\n\nCould you please provide me with more information?\n\nThank you!`
+      }));
+    }
+  }, [defaultMessage]);
 
   if (submitted) {
     return (
