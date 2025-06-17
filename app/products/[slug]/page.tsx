@@ -10,6 +10,7 @@ import { ProductCardSkeleton } from '@/app/ui/skeletons';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import ContactForm from '@/app/ui/contact-form';
 import PageTransition from '@/app/ui/PageTransition';
+import AnimatedSection from '@/app/ui/AnimatedSection';
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -122,10 +123,9 @@ export default function ProductDetailsPage() {
                       </svg>
                       Back to {formatText(product.subcategory)}
                     </button>
-
                     <div className="flex flex-col md:flex-row gap-8">
-                      {/* Product Image */}
-                      <div className="w-full md:w-1/2">
+                      <AnimatedSection direction="left" className="w-full md:w-1/2">
+                        {/* Product Image */}
                         <div className="relative h-[300px] md:h-[400px] bg-gray-200 rounded-lg overflow-hidden">
                           <div className="absolute inset-0 flex items-center justify-center text-gray-500">
                             {/* Placeholder for missing images */}
@@ -144,12 +144,10 @@ export default function ProductDetailsPage() {
                             }}
                           />
                         </div>
-                      </div>
-
-                      {/* Product Details */}
-                      <div className="w-full md:w-1/2">
+                      </AnimatedSection>
+                      <AnimatedSection direction="right" className="w-full md:w-1/2">
+                        {/* Product Details */}
                         <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
-
                         <div className="mb-6">
                           <p className="text-sm text-gray-500">
                             Added on {new Date(product.dateAdded).toLocaleDateString()}
@@ -158,7 +156,6 @@ export default function ProductDetailsPage() {
                             Brand: <span className="font-medium text-gray-700">{product.brand}</span>
                           </p>
                         </div>
-
                         <div className="border-t border-gray-200 pt-6">
                           <h2 className="text-xl font-semibold mb-4">Definition</h2>
                           <p className="text-gray-700 mb-6">
@@ -175,7 +172,7 @@ export default function ProductDetailsPage() {
                             <p className="text-gray-500 italic">No features listed.</p>
                           )}
                         </div>
-                      </div>
+                      </AnimatedSection>
                     </div>
                   </div>
                   {/* Contact Form Section */}
