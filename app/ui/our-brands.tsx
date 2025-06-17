@@ -16,9 +16,16 @@ const logos = [
 
 export default function OurBrands() {
   return (
-    <section className="py-12 bg-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-center mb-8">Our Brands</h2>
+    <section className="py-12 w-full bg-white">
+      <div className="w-full max-w-none px-0">
+        <div className="flex items-center justify-center mb-8">
+          <span className="relative inline-block w-full">
+            <span className="block w-full text-2xl font-bold text-center px-8 py-3 bg-[#0054A6] text-white rounded-none shadow-lg z-10 relative">
+              Our Brands
+            </span>
+            <span className="absolute left-1/4 right-1/4 bottom-0 h-1 bg-yellow-400 rounded-b-lg z-0" style={{height: '8px', bottom: '-8px'}}></span>
+          </span>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center justify-center">
           {logos.map((logo) => (
             <div key={logo} className="flex items-center justify-center p-2 bg-gray-50 rounded shadow-sm">
