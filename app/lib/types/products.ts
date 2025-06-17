@@ -32,4 +32,10 @@ export interface Product {
   brand: string; // Brand name
 }
 
-export type SortOption = 'alphabetical' | 'newest' | 'oldest' | 'brand';
+export type SortOption =
+  | 'alphabetical-asc'
+  | 'alphabetical-desc'
+  | 'newest'
+  | 'oldest'
+  | 'brand-asc'
+  | 'brand-desc';

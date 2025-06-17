@@ -235,28 +235,32 @@ export function sortProducts(products: Product[], sortOption: string): Product[]
         const productsCopy = [...products]
 
         switch(sortOption) {
-            case 'alphabetical':
-                return productsCopy.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+            case 'alphabetical-asc':
+                return productsCopy.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            case 'alphabetical-desc':
+                return productsCopy.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
             case 'newest':
                 return productsCopy.sort((a, b) => {
                     try {
-                        return new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime()
+                        return new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime();
                     } catch (error) {
-                        return 0
+                        return 0;
                     }
-                })
+                });
             case 'oldest':
                 return productsCopy.sort((a, b) => {
                     try {
-                        return new Date(a.dateAdded || 0).getTime() - new Date(b.dateAdded || 0).getTime()
+                        return new Date(a.dateAdded || 0).getTime() - new Date(b.dateAdded || 0).getTime();
                     } catch (error) {
-                        return 0
+                        return 0;
                     }
-                })
-            case 'supplier':
-                return productsCopy.sort((a, b) => (a.supplier || '').localeCompare(b.supplier || ''))
+                });
+            case 'brand-asc':
+                return productsCopy.sort((a, b) => (a.brand || '').localeCompare(b.brand || ''));
+            case 'brand-desc':
+                return productsCopy.sort((a, b) => (b.brand || '').localeCompare(a.brand || ''));
             default:
-                return productsCopy
+                return productsCopy;
         }
     } catch (error) {
         console.error('Error in sortProducts:', error)

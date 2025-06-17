@@ -17,7 +17,7 @@ export default function ProductsPage() {
   const subcategory = params.subcategory as string;
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [sortOption, setSortOption] = useState<SortOption>('alphabetical');
+  const [sortOption, setSortOption] = useState<SortOption>('alphabetical-asc');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -87,10 +87,12 @@ export default function ProductsPage() {
                 onChange={e => handleSortChange(e.target.value as SortOption)}
                 className={`block w-full md:w-48 px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-[#1a2332] text-gray-700 dark:text-gray-100 text-base`}
               >
-                <option value="alphabetical" className={`${robotoCondensed.className}`}>A-Z</option>
+                <option value="alphabetical-asc" className={`${robotoCondensed.className}`}>A-Z (Ascending)</option>
+                <option value="alphabetical-desc">Z-A (Descending)</option>
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
-                <option value="supplier">Brand</option>
+                <option value="brand-asc">Brand (A-Z)</option>
+                <option value="brand-desc">Brand (Z-A)</option>
               </select>
             </div>
           </div>
@@ -133,7 +135,7 @@ export default function ProductsPage() {
                     </div>
                     <div className="p-4">
                       <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
-                      <p className="text-sm text-gray-600 mb-1">Brand: <span className="font-medium text-gray-700">{product.supplier}</span></p>
+                      <p className="text-sm text-gray-600 mb-1">Brand: <span className="font-medium text-gray-700">{product.brand}</span></p>
                       <p className="text-gray-500 text-sm line-clamp-2 mb-2">{product.definition}</p>
                       <span className="text-xs text-gray-400">Added {new Date(product.dateAdded).toLocaleDateString()}</span>
                     </div>

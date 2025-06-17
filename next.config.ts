@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
             protocol: 'https',
             hostname: 'stefabprimus.com',
         },
+        {
+            protocol: 'https',
+            hostname: 'www.jensen-group.com',
+        },
     ],
   },
 };
