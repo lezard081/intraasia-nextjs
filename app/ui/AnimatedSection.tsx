@@ -13,7 +13,8 @@ export default function AnimatedSection({ children, className = "", direction = 
     initial = { opacity: 0, x: 80 };
     animate = inView ? { opacity: 1, x: 0 } : {};
   } else if (direction === "center") {
-    initial = { opacity: 0, x: 80 };
+    // Animate left and right children to meet in the middle
+    initial = { opacity: 0, x: (props['data-side'] === 'left' ? -80 : 80) };
     animate = inView ? { opacity: 1, x: 0 } : {};
   } else {
     initial = { opacity: 0, y: 40 };
