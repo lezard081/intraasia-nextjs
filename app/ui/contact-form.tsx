@@ -49,8 +49,7 @@ export default function ContactForm({ defaultMessage }: { defaultMessage?: strin
     <form
       name="contact"
       method="POST"
-      data-netlify="true"
-      data-netlify-honeypot="bot-field"
+      action="/api/contact"
       className="space-y-4 max-w-md mx-auto"
       onSubmit={() => setSubmitted(true)}
     >
@@ -62,8 +61,6 @@ export default function ContactForm({ defaultMessage }: { defaultMessage?: strin
           <input name="bot-field" value={botField} onChange={e => setBotField(e.target.value)} />
         </label>
       </div>
-      {/* Netlify reCAPTCHA widget */}
-      <div data-netlify-recaptcha="true" className="mb-4" />
       <div>
         <label htmlFor="name" className="block font-medium mb-1">Name</label>
         <input
