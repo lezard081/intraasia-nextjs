@@ -107,7 +107,7 @@ export default function ProductDetailsPage() {
                   <div className="container mx-auto px-4 md:px-8 max-w-6xl py-8 md:py-12">
                     <button
                       onClick={handleBackClick}
-                      className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
+                      className="flex items-center text-blue-600 hover:text-blue-800 mb-6 cursor-pointer"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

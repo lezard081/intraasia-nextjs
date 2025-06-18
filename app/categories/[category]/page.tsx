@@ -91,7 +91,7 @@ export default function CategoryPage() {
           <section className="relative w-full h-[250px] bg-[#0054A6]">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white">
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">{categoryDisplay} Products</h1>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">{categoryDisplay}</h1>
                 <p className="text-lg">Browse our selection of {categoryDisplay.toLowerCase()}</p>
               </div>
             </div>

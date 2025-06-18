@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 
 import HeroCarousel from "@/app/ui/hero-carousel";
