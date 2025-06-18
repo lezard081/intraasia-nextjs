@@ -29,6 +29,25 @@ const nextConfig: NextConfig = {
             protocol: 'https',
             hostname: 'products.gabraun.com',
         },
+        {
+            protocol: 'https',
+            hostname: 'drive.google.com',
+        },
+        {
+            protocol: 'https',
+            hostname: 'www.giorik.com',
+            pathname: '/imageimp/**',
+        },
+        {
+            protocol: 'https',
+            hostname: 'www.renzacci.it',
+            pathname: '/cloud/**',
+        },
+        {
+            protocol: 'https',
+            hostname: 'www.uniondc.com',
+            pathname: '/wp-content/uploads/**',
+        },
     ],
   },
   typescript: {
