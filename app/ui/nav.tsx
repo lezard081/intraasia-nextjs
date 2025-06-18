@@ -116,7 +116,7 @@ export default function Nav() {
                             </li>
                         ))}
                         <li>
-                            <span className="block px-2 py-2 text-base font-semibold text-gray-800 dark:text-blue-400 uppercase tracking-wide">Categories</span>
+                            <span className="block px-2 py-2 text-base font-semibold text-gray-800 dark:text-blue-400 uppercase tracking-wide cursor-pointer select-none">Categories</span>
                             <ul className="pl-2 space-y-2 mt-2">
                                 {loading ? (
                                     <li className="px-2 py-2 text-sm text-gray-600 dark:text-gray-300">
