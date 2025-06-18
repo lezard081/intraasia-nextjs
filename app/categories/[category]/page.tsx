@@ -40,7 +40,7 @@ export default function CategoryPage() {
   const [subcategories, setSubcategories] = useState<Array<{ name: string; slug: string; description: string; image: string }>>([]);
   const [productCounts, setProductCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<unknown>(null);
+  const [fetchError, setFetchError] = useState<any>(null);
 
   useEffect(() => {
     async function loadData() {

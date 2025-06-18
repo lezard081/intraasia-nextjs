@@ -5,11 +5,10 @@ import IntraAsiaLogo from './intra-asia-logo';
 import Navlinks from './nav-links';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { Category, Subcategory } from '@/app/lib/types/products';
 
 interface NavClientProps {
-  categories: Category[];
-  subcategories: Subcategory[];
+  categories: any[];
+  subcategories: any[];
 }
 
 export default function NavClient({ categories, subcategories }: NavClientProps) {
@@ -21,11 +20,11 @@ export default function NavClient({ categories, subcategories }: NavClientProps)
   }, [pathname]);
 
   function getCategoriesFromDb() {
-    return categories.map((cat) => ({
+    return categories.map((cat: any) => ({
       section: cat.name,
       items: subcategories
-        .filter((sub) => sub.category_id === cat.id)
-        .map((sub) => ({
+        .filter((sub: any) => sub.category_id === cat.id)
+        .map((sub: any) => ({
           name: sub.name,
           href: `/categories/${cat.name}/${sub.name}`
         }))
