@@ -1,4 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const createClient = () => {
     try {
@@ -15,11 +16,12 @@ export const createClient = () => {
         console.error('Error creating Supabase client:', error);
         // Return a dummy client that will gracefully fail
         // This prevents the app from crashing but logs errors
-        return {
+        const dummyClient: Partial<SupabaseClient> = {
             from: () => ({
                 select: () => Promise.resolve({ data: [], error: new Error('Supabase client initialization failed') })
-            }),
+            })
             // Add other methods as needed
-        } as any;
+        };
+        return dummyClient as SupabaseClient;
     }
 };
