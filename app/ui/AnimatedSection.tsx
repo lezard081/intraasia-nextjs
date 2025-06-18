@@ -4,21 +4,21 @@ import { useRef } from "react";
 
 export default function AnimatedSection({ children, className = "", direction = "up", ...props }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  // Track inView continuously for fade out
+  const inView = useInView(ref, { once: false, margin: "-100px" });
   let initial, animate;
   if (direction === "left") {
     initial = { opacity: 0, x: -80 };
-    animate = inView ? { opacity: 1, x: 0 } : {};
+    animate = inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 };
   } else if (direction === "right") {
     initial = { opacity: 0, x: 80 };
-    animate = inView ? { opacity: 1, x: 0 } : {};
+    animate = inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 80 };
   } else if (direction === "center") {
-    // Animate left and right children to meet in the middle
     initial = { opacity: 0, x: (props['data-side'] === 'left' ? -80 : 80) };
-    animate = inView ? { opacity: 1, x: 0 } : {};
+    animate = inView ? { opacity: 1, x: 0 } : { opacity: 0, x: (props['data-side'] === 'left' ? -80 : 80) };
   } else {
     initial = { opacity: 0, y: 40 };
-    animate = inView ? { opacity: 1, y: 0 } : {};
+    animate = inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 };
   }
   return (
     <motion.section

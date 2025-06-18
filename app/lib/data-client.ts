@@ -50,8 +50,8 @@ export async function getProducts(): Promise<Product[]> {
 
         // Transform the data to match the Product interface
         return products
-            .filter(product => 
-                product && 
+            .filter(product =>
+                product &&
                 product.subcategories && 
                 product.subcategories.categories && 
                 product.brands
@@ -292,3 +292,4 @@ export async function getHeroSlides(): Promise<SlideData[]> {
         return []
     }
 }
+

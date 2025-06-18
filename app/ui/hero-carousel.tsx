@@ -81,8 +81,8 @@ const HeroCarousel = () => {
                             width={1920}
                             height={1080}
                             className={cn(
-                                "w-full h-full object-cover",
-                                "transition-opacity duration-500"
+                                "w-full h-full object-cover transition-opacity duration-700",
+                                "swiper-fade-out:opacity-0 swiper-fade-in:opacity-100"
                             )}
                             priority={index === 0}
                         />
