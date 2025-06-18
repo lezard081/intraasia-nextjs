@@ -10,11 +10,9 @@ export default function Home() {
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
-        <AnimatedSection>
           <section className="w-full h-[600px]">
             <HeroCarousel />
           </section>
-        </AnimatedSection>
         <AnimatedSection>
           <section className="w-full py-16 bg-[#0054A6] text-white">
             <div className="container mx-auto px-4 md:px-8 max-w-6xl">
