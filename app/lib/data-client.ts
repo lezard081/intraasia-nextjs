@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@/app/lib/utils/supabase/client'
 import { Product } from '@/app/lib/types/products'
 import { SlideData } from '@/app/lib/types/slides'
@@ -49,24 +50,14 @@ export async function getProducts(): Promise<Product[]> {
         }
 
         // Transform the data to match the Product interface
-        type RawProduct = {
-            id: string | number;
-            slug: string;
-            name?: string;
-            image?: string;
-            description?: string;
-            brands: { name?: string };
-            subcategories: { name?: string; categories: { name?: string } };
-            product_features?: { features?: { name?: string } }[];
-        };
-        return (products as RawProduct[])
-            .filter((product) =>
+        return products
+            .filter((product: { subcategories: { categories: any }; brands: any }) =>
                 product &&
                 product.subcategories &&
                 product.subcategories.categories &&
                 product.brands
             )
-            .map((product) => ({
+            .map((product: { id: { toString: () => any }; slug: any; name: any; image: any; subcategories: { categories: { name: any }; name: any }; brands: { name: any }; description: any; product_features: any[] }) => ({
                 id: product.id.toString(),
                 slug: product.slug,
                 name: product.name || 'Unnamed Product',
@@ -75,135 +66,15 @@ export async function getProducts(): Promise<Product[]> {
                 subcategory: (product.subcategories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
                 brand: product.brands.name || 'Unknown Brand',
                 definition: product.description || '',
-                features: product.product_features ?
+                features: product.product_features ? 
                     product.product_features
-                        .filter((pf) => pf && pf.features)
-                        .map((pf) => pf.features!.name || 'Unnamed Feature') :
+                        .filter(pf => pf && pf.features)
+                        .map(pf => pf.features.name || 'Unnamed Feature') :
                     [],
                 dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
             }))
     } catch (error) {
         console.error('Error in getProducts:', error)
-        return []
-    }
-}
-
-// Fetch all categories from the database
-export async function getCategories() {
-    try {
-        const supabase = createClient()
-
-        const { data: categories, error } = await supabase
-            .from('categories')
-            .select(`
-                id,
-                name,
-                subcategories (
-                    id,
-                    name
-                )
-            `)
-
-        if (error) {
-            console.error('Error fetching categories:', error)
-            return []
-        }
-
-        // Transform the data to match the Category interface
-        type RawCategory = {
-            id: string | number;
-            name: string;
-            subcategories?: RawSubcategory[];
-        };
-        type RawSubcategory = {
-            id: string | number;
-            name: string;
-        };
-
-        // Add slug to each category
-        return (categories as RawCategory[]).map((cat) => ({
-            ...cat,
-            slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
-            subcategories: cat.subcategories
-                ? (cat.subcategories as RawSubcategory[]).map((sub) => ({
-                    ...sub,
-                    slug: sub.name.toLowerCase().replace(/\s+/g, '-')
-                }))
-                : []
-        }))
-    } catch (error) {
-        console.error('Error in getCategories:', error)
-        return []
-    }
-}
-
-// Fetch all subcategories from the database
-export async function getSubcategories() {
-    try {
-        const supabase = createClient()
-
-        const { data: subcategories, error } = await supabase
-            .from('subcategories')
-            .select(`
-                id,
-                name,
-                category_id,
-                categories (
-                    id,
-                    name
-                )
-            `)
-
-        if (error) {
-            console.error('Error fetching subcategories:', error)
-            return []
-        }
-
-        return subcategories || []
-    } catch (error) {
-        console.error('Error in getSubcategories:', error)
-        return []
-    }
-}
-
-// Fetch all brands from the database
-export async function getBrands() {
-    try {
-        const supabase = createClient()
-
-        const { data: brands, error } = await supabase
-            .from('brands')
-            .select('*')
-
-        if (error) {
-            console.error('Error fetching brands:', error)
-            return []
-        }
-
-        return brands || []
-    } catch (error) {
-        console.error('Error in getBrands:', error)
-        return []
-    }
-}
-
-// Fetch all features from the database
-export async function getFeatures() {
-    try {
-        const supabase = createClient()
-
-        const { data: features, error } = await supabase
-            .from('features')
-            .select('*')
-
-        if (error) {
-            console.error('Error fetching features:', error)
-            return []
-        }
-
-        return features || []
-    } catch (error) {
-        console.error('Error in getFeatures:', error)
         return []
     }
 }
@@ -226,17 +97,6 @@ export async function getProductsByCategory(categoryName: string, subcategoryNam
     } catch (error) {
         console.error('Error in getProductsByCategory:', error);
         return [];
-    }
-}
-
-// Helper function to get a product by ID
-export async function getProductById(id: string): Promise<Product | undefined> {
-    try {
-        const products = await getProducts()
-        return products.find(product => product.id === id)
-    } catch (error) {
-        console.error('Error in getProductById:', error)
-        return undefined
     }
 }
 

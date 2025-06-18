@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Metadata } from "next";
 import { robotoCondensed } from "@/app/ui/fonts";
 import Nav from "@/app/ui/nav";

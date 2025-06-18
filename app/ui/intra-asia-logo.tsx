@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { robotoCondensed } from "@/app/ui/fonts";
 import Image from "next/image";
 

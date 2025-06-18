@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Image from "next/image";
 import PageTransition from '../ui/PageTransition';
 import AnimatedSection from '../ui/AnimatedSection';

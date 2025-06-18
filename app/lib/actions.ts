@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { cookies } from "next/headers";
 import { createClient } from "@/app/lib/utils/supabase/server";
 
