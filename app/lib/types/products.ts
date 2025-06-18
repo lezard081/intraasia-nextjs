@@ -19,6 +19,7 @@ export interface ProductSpecification {
 
 export interface Product {
   id: string;
+  slug: string;
   name: string;
   image: string;
   category: string;
@@ -28,7 +29,13 @@ export interface Product {
   definition: string;
   features: string[];
   dateAdded: string; // ISO date string format
-  supplier: string; // New field for supplier name
+  brand: string; // Brand name
 }
 
-export type SortOption = 'alphabetical' | 'newest' | 'oldest' | 'supplier';
+export type SortOption =
+  | 'alphabetical-asc'
+  | 'alphabetical-desc'
+  | 'newest'
+  | 'oldest'
+  | 'brand-asc'
+  | 'brand-desc';

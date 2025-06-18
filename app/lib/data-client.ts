@@ -11,6 +11,7 @@ export async function getProducts(): Promise<Product[]> {
             .from('products')
             .select(`
                 id,
+                slug,
                 name,
                 description,
                 image,
@@ -57,10 +58,12 @@ export async function getProducts(): Promise<Product[]> {
             )
             .map(product => ({
                 id: product.id.toString(),
+                slug: product.slug,
                 name: product.name || 'Unnamed Product',
                 image: product.image || '/product-images/placeholder.jpg',
                 category: (product.subcategories.categories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
                 subcategory: (product.subcategories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
+                brand: product.brands.name || 'Unknown Brand',
                 definition: product.description || '',
                 features: product.product_features ? 
                     product.product_features
@@ -68,7 +71,6 @@ export async function getProducts(): Promise<Product[]> {
                         .map(pf => pf.features.name || 'Unnamed Feature') : 
                     [],
                 dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
-                supplier: product.brands.name || 'Unknown Supplier'
             }))
     } catch (error) {
         console.error('Error in getProducts:', error)
@@ -217,6 +219,12 @@ export async function getProductById(id: string): Promise<Product | undefined> {
     }
 }
 
+// Helper function to get a product by slug
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+    const products = await getProducts();
+    return products.find(product => product.slug === slug);
+}
+
 // Helper function to sort products
 export function sortProducts(products: Product[], sortOption: string): Product[] {
     try {
@@ -227,28 +235,32 @@ export function sortProducts(products: Product[], sortOption: string): Product[]
         const productsCopy = [...products]
 
         switch(sortOption) {
-            case 'alphabetical':
-                return productsCopy.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+            case 'alphabetical-asc':
+                return productsCopy.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            case 'alphabetical-desc':
+                return productsCopy.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
             case 'newest':
                 return productsCopy.sort((a, b) => {
                     try {
-                        return new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime()
+                        return new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime();
                     } catch (error) {
-                        return 0
+                        return 0;
                     }
-                })
+                });
             case 'oldest':
                 return productsCopy.sort((a, b) => {
                     try {
-                        return new Date(a.dateAdded || 0).getTime() - new Date(b.dateAdded || 0).getTime()
+                        return new Date(a.dateAdded || 0).getTime() - new Date(b.dateAdded || 0).getTime();
                     } catch (error) {
-                        return 0
+                        return 0;
                     }
-                })
-            case 'supplier':
-                return productsCopy.sort((a, b) => (a.supplier || '').localeCompare(b.supplier || ''))
+                });
+            case 'brand-asc':
+                return productsCopy.sort((a, b) => (a.brand || '').localeCompare(b.brand || ''));
+            case 'brand-desc':
+                return productsCopy.sort((a, b) => (b.brand || '').localeCompare(a.brand || ''));
             default:
-                return productsCopy
+                return productsCopy;
         }
     } catch (error) {
         console.error('Error in sortProducts:', error)
