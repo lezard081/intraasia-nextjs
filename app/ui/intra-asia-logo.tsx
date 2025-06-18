@@ -11,7 +11,7 @@ export default function IntraAsiaLogo() {
             alt="Intraasia" 
             width={1838} 
             height={388}
-            className="w-auto h-auto max-h-10 sm:max-h-12 md:max-h-14" 
+            className="w-[30vw] h-auto max-h-10 sm:max-h-12 md:max-h-14 min-w-0"
         />
         </div>
     )
