@@ -75,9 +75,11 @@ export default function ProductDetailsPage() {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
+          <section className="w-full py-12 bg-gray-50">
+            <div className="container mx-auto px-4 md:px-8 max-w-6xl">
+              <ProductCardSkeleton />
+            </div>
+          </section>
         )}
 
         {/* Product Not Found */}
@@ -95,15 +97,9 @@ export default function ProductDetailsPage() {
         )}
 
         {/* Product Details */}
-        <section className="w-full py-12 bg-gray-50">
-          <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-            {isLoading ? (
-              <ProductCardSkeleton />
-            ) : !product ? (
-              <div className="text-center py-12">
-                <h3 className="text-xl text-gray-600">Product not found</h3>
-              </div>
-            ) : (
+        {!isLoading && product && (
+          <section className="w-full py-12 bg-gray-50">
+            <div className="container mx-auto px-4 md:px-8 max-w-6xl">
               <React.Suspense fallback={<ProductCardSkeleton />}>
                 <>
                   {/* Product Content */}
@@ -188,9 +184,9 @@ export default function ProductDetailsPage() {
                   </section>
                 </>
               </React.Suspense>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
       </div>
     </PageTransition>
   );
