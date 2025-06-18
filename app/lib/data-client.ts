@@ -49,14 +49,24 @@ export async function getProducts(): Promise<Product[]> {
         }
 
         // Transform the data to match the Product interface
-        return products
-            .filter(product =>
+        type RawProduct = {
+            id: string | number;
+            slug: string;
+            name?: string;
+            image?: string;
+            description?: string;
+            brands: { name?: string };
+            subcategories: { name?: string; categories: { name?: string } };
+            product_features?: { features?: { name?: string } }[];
+        };
+        return (products as RawProduct[])
+            .filter((product) =>
                 product &&
-                product.subcategories && 
-                product.subcategories.categories && 
+                product.subcategories &&
+                product.subcategories.categories &&
                 product.brands
             )
-            .map(product => ({
+            .map((product) => ({
                 id: product.id.toString(),
                 slug: product.slug,
                 name: product.name || 'Unnamed Product',
@@ -65,10 +75,10 @@ export async function getProducts(): Promise<Product[]> {
                 subcategory: (product.subcategories.name || 'uncategorized').toLowerCase().replace(/\s+/g, '-'),
                 brand: product.brands.name || 'Unknown Brand',
                 definition: product.description || '',
-                features: product.product_features ? 
+                features: product.product_features ?
                     product.product_features
-                        .filter(pf => pf && pf.features)
-                        .map(pf => pf.features.name || 'Unnamed Feature') : 
+                        .filter((pf) => pf && pf.features)
+                        .map((pf) => pf.features!.name || 'Unnamed Feature') :
                     [],
                 dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
             }))
@@ -99,12 +109,23 @@ export async function getCategories() {
             return []
         }
 
+        // Transform the data to match the Category interface
+        type RawCategory = {
+            id: string | number;
+            name: string;
+            subcategories?: RawSubcategory[];
+        };
+        type RawSubcategory = {
+            id: string | number;
+            name: string;
+        };
+
         // Add slug to each category
-        return (categories || []).map((cat: any) => ({
+        return (categories as RawCategory[]).map((cat) => ({
             ...cat,
             slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
             subcategories: cat.subcategories
-                ? cat.subcategories.map((sub: any) => ({
+                ? (cat.subcategories as RawSubcategory[]).map((sub) => ({
                     ...sub,
                     slug: sub.name.toLowerCase().replace(/\s+/g, '-')
                 }))
@@ -292,4 +313,3 @@ export async function getHeroSlides(): Promise<SlideData[]> {
         return []
     }
 }
-
