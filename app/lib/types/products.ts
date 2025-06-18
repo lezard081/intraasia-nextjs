@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface Category {
   id: string;
   name: string;

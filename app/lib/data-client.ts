@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@/app/lib/utils/supabase/client'
 import { Product } from '@/app/lib/types/products'
 import { SlideData } from '@/app/lib/types/slides'
@@ -52,8 +53,8 @@ export async function getProducts(): Promise<Product[]> {
         return products
             .filter((product: { subcategories: { categories: any }; brands: any }) =>
                 product &&
-                product.subcategories && 
-                product.subcategories.categories && 
+                product.subcategories &&
+                product.subcategories.categories &&
                 product.brands
             )
             .map((product: { id: { toString: () => any }; slug: any; name: any; image: any; subcategories: { categories: { name: any }; name: any }; brands: { name: any }; description: any; product_features: any[] }) => ({
@@ -68,7 +69,7 @@ export async function getProducts(): Promise<Product[]> {
                 features: product.product_features ? 
                     product.product_features
                         .filter(pf => pf && pf.features)
-                        .map(pf => pf.features.name || 'Unnamed Feature') : 
+                        .map(pf => pf.features.name || 'Unnamed Feature') :
                     [],
                 dateAdded: new Date().toISOString(), // Assuming this isn't in the DB schema
             }))

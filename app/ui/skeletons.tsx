@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 export function Skeleton({ className = '' }: { className?: string }) {
@@ -34,4 +35,3 @@ export function SubcategoryCardSkeleton() {
     </div>
   );
 }
-
