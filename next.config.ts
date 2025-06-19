@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
             hostname: 'www.uniondc.com',
             pathname: '/wp-content/uploads/**',
         },
+        {
+            protocol: 'https',
+            hostname: 'ywramlwefsopnakxqlqp.supabase.co',
+            pathname: '/storage/v1/object/public/intraasia-images/**',
+        },
     ],
   },
   typescript: {
