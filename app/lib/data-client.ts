@@ -271,25 +271,16 @@ export function sortProducts(products: Product[], sortOption: string): Product[]
 // Get hero slides data
 export async function getHeroSlides(): Promise<SlideData[]> {
     try {
-        // This could be fetched from a database in the future
-        // For now, we'll return static data
-        return [
-            {
-                id: 1,
-                image: '/hero-images/hero-1.jpg',
-            },
-            {
-                id: 2,
-                image: '/hero-images/hero-2.jpg',
-            },
-            {
-                id: 3,
-                image: '/hero-images/hero-3.jpg',
-            }
-        ];
+        const res = await fetch('/api/images?folder=hero-images');
+        if (!res.ok) throw new Error('Failed to fetch hero images');
+        const data = await res.json();
+        if (!Array.isArray(data.images)) return [];
+        return data.images.map((img: string, idx: number) => ({
+            id: idx + 1,
+            image: img,
+        }));
     } catch (error) {
         console.error('Error in getHeroSlides:', error)
         return []
     }
 }
-

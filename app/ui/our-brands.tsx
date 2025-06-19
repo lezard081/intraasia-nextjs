@@ -1,20 +1,27 @@
 'use client';
 import Image from 'next/image';
-
-const logos = [
-  'braun logo.png',
-  'electrolux-logo.png',
-  'giorik-logo.jpg',
-  'hobart-logo.png',
-  'jensen-logo.png',
-  'pony-logo.png',
-  'primus-logo.png',
-  'renzacci-logo.png',
-  'sammic-logo.png',
-  'union-logo.png',
-];
+import { useEffect, useState } from 'react';
 
 export default function OurBrands() {
+  const [logos, setLogos] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchLogos() {
+      try {
+        const res = await fetch('/api/images?folder=brand-logos');
+        if (!res.ok) throw new Error('Failed to fetch brand logos');
+        const data = await res.json();
+        setLogos(Array.isArray(data.images) ? data.images : []);
+      } catch (e) {
+        setLogos([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLogos();
+  }, []);
+
   return (
     <section className="py-12 w-full bg-white">
       <div className="w-full max-w-none px-0">
@@ -27,18 +34,22 @@ export default function OurBrands() {
           </span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center justify-center">
-          {logos.map((logo) => (
-            <div key={logo} className="flex items-center justify-center p-2 bg-gray-50 rounded shadow-sm">
-              <Image
-                src={`/brand-logos/${logo}`}
-                alt={logo.replace(/[-_]/g, ' ').replace(/\..+$/, '')}
-                width={120}
-                height={60}
-                className="object-contain h-16 w-auto"
-                loading="lazy"
-              />
-            </div>
-          ))}
+          {loading ? (
+            <div className="col-span-full text-center">Loading...</div>
+          ) : (
+            logos.map((logo) => (
+              <div key={logo} className="flex items-center justify-center p-2 bg-gray-50 rounded shadow-sm">
+                <Image
+                  src={logo}
+                  alt={logo.replace(/[-_]/g, ' ').replace(/^.*\//, '').replace(/\..+$/, '')}
+                  width={120}
+                  height={60}
+                  className="object-contain h-16 w-auto"
+                  loading="lazy"
+                />
+              </div>
+            ))
+          )}
         </div>
       </div>
     </section>
