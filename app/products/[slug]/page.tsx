@@ -179,7 +179,7 @@ export default function ProductDetailsPage() {
                         Have questions or want to inquire about{' '}
                         <span className="font-semibold">{product.name}</span>? Fill out the form below and our team will get back to you promptly.
                       </p>
-                      <ContactForm defaultMessage={`Hi IntraAsia, I would like to know more about: ${product.name} Thanks!`} />
+                      <ContactForm defaultMessage={`Hi IntraAsia Team, I would like to know more about: \nProduct: ${product.name} \nBrand: ${product.brand} \nProduct Category: ${formatText(product.subcategory)} Thanks!`} />
                     </div>
                   </section>
                 </>
